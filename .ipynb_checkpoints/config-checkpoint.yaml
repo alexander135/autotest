@@ -1,2 +1,2 @@
-PATH: 'http://127.0.0.1:8001/job/test/7/testReport/api/python?pretty=true'
+PATH: 'http://127.0.0.1:8001/job/'
 name: {'test':7}
