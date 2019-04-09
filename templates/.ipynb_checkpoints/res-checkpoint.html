@@ -1,46 +1,39 @@
-<html>
-    
-    <head>
-        <style>
-            table{ 
-                width: 50vw;
-                height: 10vh;
-                border-collapse: collapse;
-                background: #9ACD32;
-                border:4px solid black
-            }
-            tr,td{
-                border:2px solid black
-            }
-        </style>
+{% extends "base.html" %}
+{% block content %}
+{% for key,value in results['job'].items() %}
+    <h1>{{key}}: {{value}}</h1>
+{% endfor %}
 
-    </head>
-
-    <body>
         <table>
             <tr>
                 <td>Test Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
                 <td>Skipped</td>
-                <td>Total{{graf}}</td>
+                <td>Total</td>
                 <td>Success %</td>
             </tr>
             
-            {% for name in results%}
-                <tr>
-                    <td>{{name}}</td>
-                    {% for i in results[name].values() %}
-                    
-                    <td>{{i}}</td>
+            {% for name in results %}
+                {% if name != 'job' and name != '_id' %}
+                    <tr>
+                        <td>{{name}}</td>
+                        {% for i in results[name].values() %}
 
+                        <td>{{i}}</td>
                     
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        
+                {% endif %}
+            {% endfor %}        
         </table>
-        
-    <body>
-        
-</html>
+        <div class = but>
+            {% if id > 1 %}
+            <a href = "./{{id-1}}"><button> previous </button></a>
+            {% endif %}
+            {% if last_id > id %}
+            <a href = "./{{id+1}}"><button> next </button></a>
+            {% endif %}
+            <button> update </button>
+        </div>
+{% endblock %}
