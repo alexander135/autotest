@@ -1,2 +1,11 @@
 PATH: http://127.0.0.1:8001/job/
-name: {test: 19}
+name:
+  test:
+    id: 54
+    pk: 37
+to_sum:
+  1:
+  - Tests
+  - SmokeTests
+  2:
+  - FunctionalTests

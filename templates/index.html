@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
     {% for jobname in jobnames.keys() %}
-    <a href = "/jobs/{{jobname}}/{{ jobnames[jobname] }}"><button >{{jobname}}</button></a>
+    <a href = "/jobs/{{jobname}}/{{jobnames[jobname]['pk']}}"><button >{{jobname}}</button></a>
     {% endfor %}
 {% endblock %}

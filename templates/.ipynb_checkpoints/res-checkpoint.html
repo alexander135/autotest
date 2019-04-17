@@ -28,12 +28,13 @@
             {% endfor %}        
         </table>
         <div class = but>
-            {% if id > 1 %}
-            <a href = "./{{id-1}}"><button> previous </button></a>
+            {% if pk > 1 %}
+            <a href = "./{{pk-1}}"><button> previous </button></a>
             {% endif %}
-            {% if last_id > id %}
-            <a href = "./{{id+1}}"><button> next </button></a>
+            {% if total > pk %}
+            <a href = "./{{pk+1}}"><button> next </button></a>
             {% endif %}
-            <button> update </button>
-        </div>
+            <a href = "./{{pk}}/update"><button> update </button></a>
+            <h1>{{message}}</h1>
+         </div>
 {% endblock %}

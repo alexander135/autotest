@@ -1,1 +1,1 @@
-{"job": {"name": "test", "id": 19, "date": "2019-04-08 18:22:03"}, "Tests": {"passed": 110, "failed": 6, "skipped": 14, "total": 130, "succeed": 94.83}}
+{"job": {"name": "test", "id": 54, "date": "2019-04-17 18:02:07"}, "Tests": {"passed": 26, "failed": 178, "skipped": 66, "total": 270, "succeed": 12.75}, "SmokeTests": {"passed": 0, "failed": 5, "skipped": 5, "total": 10, "succeed": 0.0}, "FunctionalTests": {"passed": 33, "failed": 4, "skipped": 120, "total": 157, "succeed": 89.19}}
