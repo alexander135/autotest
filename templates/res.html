@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 {% for key,value in results['job'].items() %}
+    {% if key == 'name' %}
     <h1>{{key}}: {{value}}</h1>
+    {% else %}
+    <span>
+        {{key}}: {{value}}; 
+    </span>
+    {% endif %}
 {% endfor %}
 
         <table>
+            <caption>
+                    Tests results
+            </caption> 
             <tr>
                 <td>Test Type</td>
                 <td>Passed</td>
@@ -27,6 +36,32 @@
                 {% endif %}
             {% endfor %}        
         </table>
+        
+        <table>
+            <caption>
+                    Summed tests results
+            </caption> 
+            <tr>
+                <td>Tests Type</td>
+                <td>Passed</td>
+                <td>Failed</td>
+                <td>Skipped</td>
+                <td>Total</td>
+                <td>Success %</td>
+            </tr>
+            {% for name in summed_res.keys() %}
+                <tr>
+                    <td>
+                        {{name}}
+                    </td>
+                    {% for i in summed_res[name].values() %}
+                    <td>
+                        {{ i }}
+                    </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
         <div class = but>
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button> previous </button></a>
@@ -36,5 +71,6 @@
             {% endif %}
             <a href = "./{{pk}}/update"><button> update </button></a>
             <h1>{{message}}</h1>
-         </div>
+        </div>
+
 {% endblock %}

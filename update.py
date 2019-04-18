@@ -28,15 +28,15 @@ def update():
                         res[name] = {'passed':0, 'failed':0, 'skipped':0, 'total':0}
                     res[name]['total'] += 1
                     if i['skipped'] == False:
-                        if i['status'] == 'PASSED':
+                        if i['status'] != 'FAILED':
                             res[name]['passed'] += 1
                         else:
                             res[name]['failed'] += 1
                     else:
                         res[name]['skipped'] += 1
 
-                for name in names:
-                    res[name]['succeed'] = round(res[name]['passed']/(res[name]['passed'] + res[name]['failed'])*100, 2)
+#                for name in names:
+#                    res[name]['succeed'] = round(res[name]['passed']/(res[name]['passed'] + res[name]['failed'])*100, 2)
 
                 with open(curname + '.json', 'w') as file:
                           json.dump(res, file)

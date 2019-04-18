@@ -1,11 +1,11 @@
 PATH: http://127.0.0.1:8001/job/
 name:
-  test: 
-    id: 45
-    pk: 28
-to_sum:
-  1:
-  - Tests
-  - SmokeTests
-  2:
-  - FunctionalTests
+  test:
+    id: 59
+    pk: 42
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests

@@ -38,13 +38,36 @@ def present(jobname, pk):
     total = coll.find().count()
     c = coll.find_one({"job.pk": pk})
     last_id = config['name'][jobname]['id']
-    return render_template('res.html', results = c, pk = pk, last_id = last_id, total = total, message = message)
+    for test_name in c:
+        if test_name != 'job' and test_name != '_id':
+            c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
+    
+    
+    summed_res = {}    
+    for type in config['name'][jobname]['to_sum']:              #create dict with summed tests from config
+        sum_name =''
+        summed = {}
+        for i in config['name'][jobname]['to_sum'][type]:
+            if sum_name != '':
+                sum_name += '+'
+            sum_name += i
+            for j in c[i].keys():
+                if j not in summed.keys():
+                    summed[j] = c[i][j]
+                else:
+                    summed[j] += c[i][j]
+        summed_res[sum_name] = summed
+        summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
+                                                (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2)
+                
+                
+    return render_template('res.html', results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")
 def update(jobname, pk):
-    config = yaml.load(open('config.yaml'))
     if upd():
+        config = yaml.load(open('config.yaml'))
         return redirect(url_for('present',jobname = jobname, pk = config['name'][jobname]['pk'], mes = 'done'))
     else:
         return redirect(url_for('present',jobname = jobname, pk = pk, mes = 'already up to date'))
