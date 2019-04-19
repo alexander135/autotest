@@ -5,10 +5,17 @@ import pymongo
 from update import update as upd
 from crontab import CronTab
 import os
+import logging
+import logging.config
 
 
 app = Flask(__name__)
 
+config = yaml.load(open('config.yaml'))
+logger_dict = config['logger_config']
+logging.config.dictConfig(logger_dict)
+logger = logging.getLogger('server')
+logger.info('server started')
 
 
 my_cron = CronTab(user = True) # 2 crons after first run???
@@ -16,6 +23,8 @@ my_cron.remove_all()
 job = my_cron.new(command='/anaconda3/bin/python /Users/alexandroleshko/uir/update.py') #fix python and script paths
 job.minute.every(1)
 my_cron.write()
+
+
 
 @app.route("/")
 def index():

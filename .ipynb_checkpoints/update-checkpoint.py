@@ -8,15 +8,25 @@ import pymongo
 import pprint
 from datetime import datetime
 import os
+import logging
+import logging.config
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+config = yaml.load(open('config.yaml'))
+logger_dict = config['logger_config']
+logging.config.dictConfig(logger_dict)
+logger = logging.getLogger('server.updating_script')
+db_logger = logging.getLogger('server.updaring_script.bd')
+
+
 def update():
-    config = yaml.load(open('config.yaml'))
+    logger.info('updating script started')
     for curname in config['name'].keys():
         curpath = config['PATH'] + curname + '/lastCompletedBuild/api/python?pretty=true'
         cur = eval(urllib.request.urlopen(curpath).read())
         if int(cur['id']) != (config['name'][curname]['id']):
+                logger.info('some new results were found')
                 names = []
                 res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.utcfromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
                 path = config['PATH'] + curname + '/' + cur['id'] + '/' + curname+ 'Report/api/python?pretty=true'
@@ -50,19 +60,22 @@ def update():
                 with open('config.yaml', 'w') as f:
                     yaml.dump(config, f, default_flow_style=False)
 
-                print('Done')
+                logger.info('test results have been updated')
                 return 'Done'
         else:
-            print('already up to date')
+            logger.info('already up to date')
             return 0
         
         
 def mongoSave(result, jobname):
+    db_logger.info('saving to db')
     conn = pymongo.MongoClient()
+    db_logger.info('established connection to db')
     db = conn.testresults
     coll = db[jobname]
     result['job']['pk'] = coll.find().count() + 1
     coll.insert_one(result)
+    db_logger.info('saved to db')
     return result['job']['pk']
     
 if __name__ == '__main__':
