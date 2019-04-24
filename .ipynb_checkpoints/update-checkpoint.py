@@ -5,7 +5,6 @@ import json
 import pickle
 import yaml
 import pymongo
-import pprint
 from datetime import datetime
 import os
 import logging
@@ -14,7 +13,8 @@ import logging.config
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 config = yaml.load(open('config.yaml'))
-logger_dict = config['logger_config']
+logger_conf = yaml.load(open('logger_conf.yaml'))
+logger_dict = logger_conf['logger_config']
 logging.config.dictConfig(logger_dict)
 logger = logging.getLogger('server.updating_script')
 db_logger = logging.getLogger('server.updaring_script.bd')
@@ -69,7 +69,9 @@ def update():
         
 def mongoSave(result, jobname):
     db_logger.info('saving to db')
-    conn = pymongo.MongoClient()
+    db_host = config['db']['host']
+    db_port = config['db']['port']
+    conn = pymongo.MongoClient(db_host, db_port)
     db_logger.info('established connection to db')
     db = conn.testresults
     coll = db[jobname]

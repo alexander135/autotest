@@ -1,37 +1,12 @@
 PATH: http://127.0.0.1:8001/job/
-logger_config:
-  formatters:
-    simple:
-      format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-  handlers:
-    file_handler:
-      backupCount: 1
-      class: logging.handlers.RotatingFileHandler
-      filename: server_log.log
-      formatter: simple
-      level: DEBUG
-      maxBytes: 10000
-  loggers:
-    server:
-      handlers:
-      - file_handler
-      level: INFO
-      propagate: false
-    server.updating_script:
-      handlers:
-      - file_handler
-      level: INFO
-      propagate: false
-    server.updating_script.bd:
-      handlers:
-      - file_handler
-      level: INFO
-      propagate: false
-  version: 1
+db:
+  host: "127.0.0.1"
+  port: 27017
+  db_name: testresults
 name:
   test:
-    id: 63
-    pk: 47
+    id: 64
+    pk: 48
     to_sum:
       1:
       - Tests

@@ -12,7 +12,8 @@ import logging.config
 app = Flask(__name__)
 
 config = yaml.load(open('config.yaml'))
-logger_dict = config['logger_config']
+logger_conf = yaml.load(open('logger_conf.yaml'))
+logger_dict = logger_conf['logger_config']
 logging.config.dictConfig(logger_dict)
 logger = logging.getLogger('server')
 logger.info('server started')

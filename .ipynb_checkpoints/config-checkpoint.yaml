@@ -1,38 +1,15 @@
 PATH: http://127.0.0.1:8001/job/
+db:
+  host: "127.0.0.1"
+  port: 27017
+  db_name: testresults
 name:
   test:
-    id: 60
-    pk: 43
+    id: 64
+    pk: 48
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-
-logger_config:
-    version: 1
-    formatters:
-      simple:
-        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    handlers:
-      file_handler:
-        class: logging.handlers.RotatingFileHandler
-        level: DEBUG
-        formatter: simple
-        filename: server_log.log
-        maxBytes: 10000
-        backupCount: 1
-    loggers:
-      server:
-        level: INFO
-        handlers: [file_handler]
-        propagate: no
-      server.updating_script:
-        level: INFO
-        handlers: [file_handler]
-        propagate: no
-      server.updating_script.bd:
-        level: INFO
-        handlers: [file_handler]
-        propagate: no
