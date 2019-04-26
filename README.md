@@ -52,3 +52,9 @@ mongo --port port_number
 if you don't use --port than 27017 will be used
 
 to get acces to jenkins edit path to Jenkins, username and password in config.yaml
+
+to run server use 
+```
+python3 server.py
+```
+in directory with this project
