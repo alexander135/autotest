@@ -1,15 +1,18 @@
 PATH: http://127.0.0.1:8001/job/
 db:
-  host: "127.0.0.1"
-  port: 27017
   db_name: testresults
+  host: 127.0.0.1
+  port: 27017
 name:
   test:
-    id: 64
-    pk: 48
+    id: 67
+    pk: 52
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
+user:
+  password: password
+  username: new_user

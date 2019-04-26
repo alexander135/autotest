@@ -3,7 +3,7 @@ install all requirements from requirements.txt using
 ```
  pip install req_name
 ```
-server is using mongo to store test results. So you have to install it using 
+server uses mongo to store test results. So you have to install it using 
 ```
 brew install mongodb-community@4.0.8
 brew services start mongodb-community@4.0.8
@@ -50,3 +50,5 @@ to use bd use:
 mongo --port port_number
 ```
 if you don't use --port than 27017 will be used
+
+to get acces to jenkins edit path to Jenkins, username and password in config.yaml

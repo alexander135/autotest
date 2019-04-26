@@ -13,3 +13,6 @@ name:
       - SmokeTests
       2:
       - FunctionalTests
+user: 
+  username: 'new_user'
+  password: 'password'
