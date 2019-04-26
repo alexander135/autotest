@@ -7,8 +7,10 @@
     <span>
         {{key}}: {{value}}; 
     </span>
+    <br>
     {% endif %}
 {% endfor %}
+        <span>Data was updated {{last_update}}</span>
 
         <table>
             <caption>
@@ -70,7 +72,9 @@
             <a href = "./{{pk+1}}"><button> next </button></a>
             {% endif %}
             <a href = "./{{pk}}/update"><button> update </button></a>
-            <h1>{{message}}</h1>
+            {% if message %}
+            <h2> {{message}}</h2>
+            {% endif %}
         </div>
 
 {% endblock %}

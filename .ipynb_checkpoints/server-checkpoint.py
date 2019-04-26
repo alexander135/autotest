@@ -48,6 +48,7 @@ def present(jobname, pk):
     total = coll.find().count()
     c = coll.find_one({"job.pk": pk})
     last_id = config['name'][jobname]['id']
+    script_time = config['last_update']
     for test_name in c:
         if test_name != 'job' and test_name != '_id':
             c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
@@ -71,7 +72,7 @@ def present(jobname, pk):
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2)
                 
                 
-    return render_template('res.html', results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html',last_update = script_time, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")

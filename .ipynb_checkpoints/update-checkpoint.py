@@ -29,13 +29,16 @@ urllib.request.install_opener(opener)
 
 def update():
     logger.info('updating script started')
+    config['last_update'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    with open('config.yaml', 'w') as f:
+        yaml.dump(config, f, default_flow_style=False)
     for curname in config['name'].keys():
         curpath = config['PATH'] + curname + '/lastCompletedBuild/api/python?pretty=true'
         cur = eval(urllib.request.urlopen(curpath).read())
         if int(cur['id']) != (config['name'][curname]['id']):
                 logger.info('some new results were found')
                 names = []
-                res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.utcfromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
+                res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
                 path = config['PATH'] + curname + '/' + cur['id'] + '/' + curname+ 'Report/api/python?pretty=true'
                 obj = eval(urllib.request.urlopen(path).read())
                 for i in obj['suites'][0]['cases']:
