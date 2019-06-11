@@ -2,7 +2,6 @@ import requests
 import urllib
 import re
 import json
-import pickle
 import yaml
 import pymongo
 from datetime import datetime
@@ -55,8 +54,6 @@ def update():
                     else:
                         res[name]['skipped'] += 1
 
-#                for name in names:
-#                    res[name]['succeed'] = round(res[name]['passed']/(res[name]['passed'] + res[name]['failed'])*100, 2)
 
                 with open(curname + '.json', 'w') as file:
                           json.dump(res, file)

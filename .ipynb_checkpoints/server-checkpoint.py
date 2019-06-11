@@ -23,6 +23,7 @@ my_cron = CronTab(user = True) # 2 crons after first run???
 my_cron.remove_all()
 job = my_cron.new(command='/anaconda3/bin/python /Users/alexandroleshko/uir/update.py') #fix python and script paths
 job.minute.every(1)
+logger.info('job started')
 my_cron.write()
 
 
