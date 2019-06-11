@@ -3,6 +3,7 @@ db:
   db_name: testresults
   host: 127.0.0.1
   port: 27017
+last_update: '2019-06-11 13:44:00'
 name:
   test:
     id: 67
@@ -16,4 +17,3 @@ name:
 user:
   password: password
   username: new_user
-last_update: 0
