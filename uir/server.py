@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
+
 import json
 import yaml
 import pymongo
@@ -21,7 +22,7 @@ logger.info('server started')
 
 my_cron = CronTab(user = True) # 2 crons after first run???
 my_cron.remove_all()
-job = my_cron.new(command='/usr/bin/python3.6 ~/uir/update.py') #fix python and script paths
+job = my_cron.new(command='/usr/bin/python3.6 /code/uir/update.py') #fix python and script paths
 job.minute.every(1)
 my_cron.write()
 logger.info('job started')
@@ -87,5 +88,5 @@ def update(jobname, pk):
 
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = '5000', debug = True, use_reloader = False)
+    app.run(host = '127.0.0.1', port = '80', debug = True, use_reloader = False)
 
