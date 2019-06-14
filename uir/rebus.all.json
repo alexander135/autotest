@@ -1,0 +1,1 @@
+{"job": {"name": "rebus.all", "id": 687, "date": "2019-06-13 05:08:00"}, "FunctionalTests": {"passed": 111, "failed": 0, "skipped": 360, "total": 471}, "Tests": {"passed": 88, "failed": 0, "skipped": 52, "total": 140}, "SmokeTests": {"passed": 4, "failed": 1, "skipped": 5, "total": 10}}

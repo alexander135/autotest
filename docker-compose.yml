@@ -3,14 +3,17 @@ version: '3'
 services:
   web:
     build: .
+    networks:
+      - net
     ports: 
-      - "5000:5000"
+      - "80:80"
     volumes:
       - .:/code
-    network_mode: "host"
     depends_on: 
       - db
   db: 
     image: mongo:4.1
-    ports:
-      - "27017:27017"        
+    networks:
+      - net
+networks:
+  net:

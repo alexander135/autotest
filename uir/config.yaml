@@ -1,13 +1,13 @@
-PATH: http://127.0.0.1:8001/job/
+PATH: http://asts-jenkins.moex.com/view/Rebus/job/
 db:
   db_name: testresults
-  host: 127.0.0.1
+  host: db
   port: 27017
-last_update: '2019-06-13 11:44:09'
+last_update: '2019-06-14 10:11:27'
 name:
-  test:
-    id: 67
-    pk: 52
+  rebus.all:
+    id: 687
+    pk: 2
     to_sum:
       1:
       - Tests
@@ -15,5 +15,5 @@ name:
       2:
       - FunctionalTests
 user:
-  password: password
-  username: new_user
+  password: Jenpass11-goodpass
+  username: Oleshko_Alexander

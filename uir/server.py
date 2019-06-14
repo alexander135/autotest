@@ -20,7 +20,7 @@ logger = logging.getLogger('server')
 logger.info('server started')
 
 
-my_cron = CronTab(user = True) # 2 crons after first run???
+my_cron = CronTab(user = "1556") # 2 crons after first run???
 my_cron.remove_all()
 job = my_cron.new(command='/usr/bin/python3.6 /code/uir/update.py') #fix python and script paths
 job.minute.every(1)
@@ -44,7 +44,7 @@ def present(jobname, pk):
         message = request.args.get('mes', None)
     else:
         message = ''
-    conn = pymongo.MongoClient()
+    conn = pymongo.MongoClient(config['db']['host'], config['db']['port'])
     db = conn.testresults
     coll = db[jobname]
     total = coll.find().count()
@@ -88,5 +88,5 @@ def update(jobname, pk):
 
 
 if __name__ == '__main__':
-    app.run(host = '127.0.0.1', port = '80', debug = True, use_reloader = False)
+    app.run(host = 'web', port = '80', debug = True, use_reloader = False)
 

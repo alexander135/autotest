@@ -18,7 +18,7 @@ RUN pip3.6 install --no-cache-dir -r ./requirements.txt
 
 COPY . .
 
-EXPOSE 80
+#EXPOSE 80
 
 WORKDIR uir/
 

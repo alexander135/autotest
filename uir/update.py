@@ -20,7 +20,7 @@ db_logger = logging.getLogger('server.updaring_script.bd')
 
 
 password_mgr = urllib.request.HTTPPasswordMgrWithPriorAuth()
-top_level_url = "http://127.0.0.1:8001/"
+top_level_url = "http://asts-jenkins.moex.com/"
 password_mgr.add_password(None, top_level_url, config['user']['username'], config['user']['password'], is_authenticated = True)
 handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
 opener = urllib.request.build_opener(handler)
@@ -39,7 +39,8 @@ def update():
                 logger.info('some new results were found')
                 names = []
                 res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
-                path = config['PATH'] + curname + '/' + cur['id'] + '/' + curname+ 'Report/api/python?pretty=true'
+                path = config['PATH'] + curname + '/' + cur['id'] + '/testReport/api/python?pretty=true'
+                print(path)
                 obj = eval(urllib.request.urlopen(path).read())
                 for i in obj['suites'][0]['cases']:
                     name = re.findall(r'\..+\.', i['className'])[0].split('.')[1]
