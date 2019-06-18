@@ -94,5 +94,5 @@ def update(jobname, pk):
 
 
 if __name__ == '__main__':
-    app.run(host = 'web', port = '80', debug = True, use_reloader = False)
+    app.run(host = 'web', port = '8080', debug = True, use_reloader = False)
 

@@ -2,12 +2,12 @@ PATH: http://asts-jenkins.moex.com/job/
 db:
   db_name: testresults
   host: db
-  port: 27017
-last_update: '2019-06-18 14:34:46'
+  port: 27015
+last_update: '2019-06-18 15:14:53'
 name:
   fond.unifiedpool.all:
     id: 516
-    pk: 2
+    pk: 1
     to_sum:
       1:
       - Tests
@@ -25,7 +25,7 @@ name:
       - FunctionalTests
   rebus.all:
     id: 689
-    pk: 2
+    pk: 1
     to_sum:
       1:
       - Tests
