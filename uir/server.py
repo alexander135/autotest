@@ -60,7 +60,8 @@ def present(jobname, pk):
             c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
     
     
-    summed_res = {}    
+    summed_res = {} 
+    successfull= True   
     for type in config['name'][jobname]['to_sum']:              #create dict with summed tests from config
         sum_name =''
         summed = {}
@@ -76,9 +77,10 @@ def present(jobname, pk):
         summed_res[sum_name] = summed
         summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2)
-                
-                
-    return render_template('res.html',last_update = script_time, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+        if summed_res[sum_name]['succeed'] <= 95:
+            successfull = False 
+            
+    return render_template('res.html',last_update = script_time, successfull = successfull, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")

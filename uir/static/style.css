@@ -18,9 +18,12 @@ tr,td{
 
 button{
     font-size:1.2vw;
-    width:6.5vw;
-    border-radius:30px;
+    border-radius: 15px;
     float:left;
+    margin: 5px;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px
 }
 
 .but{
@@ -45,3 +48,10 @@ h2{
     font-size: 1.5vw;
     margin-top: 0px;
 }
+.main-but{
+    font-size: 1.5vw;
+}
+.bad{
+    background: red;    
+}
+

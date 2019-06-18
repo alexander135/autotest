@@ -1,6 +1,9 @@
 {% extends "base.html" %}
-<div allign = center>
 {% block content %}
+<a href =/ ><button class = main-but> Home</button></a>
+
+
+<div class = info>
 {% for key,value in results['job'].items() %}
     {% if key == 'name' %}
     <h1>{{key}}: {{value}}</h1>
@@ -12,8 +15,14 @@
     {% endif %}
 {% endfor %}
         <span>Data was updated {{last_update}}</span>
+</div>
 
-        <table>
+{% if not successfull %}
+    {% set class = 'bad' %} 
+{% else %}
+    {% set class = '' %}
+{% endif %}
+        <table class = {{ class }}>
             <caption>
                     Tests results
             </caption> 
@@ -40,7 +49,7 @@
             {% endfor %}        
         </table>
         
-        <table>
+        <table class = {{class}}>
             <caption>
                     Summed tests results
             </caption> 
@@ -79,4 +88,3 @@
         </div>
 
 {% endblock %}
-<div>

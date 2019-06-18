@@ -11,8 +11,6 @@ import logging.config
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-#TODO change PATH or curname to add noRebus jobs
-#Special tests in to_sum config.yaml fix time
 #bootstrap?? design, little js(выпадающие окошки, пофиксить надпись об обновлении)
 
 config = yaml.load(open('config.yaml'))
