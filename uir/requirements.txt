@@ -1,6 +1,4 @@
 Flask==1.0.2
 pymongo==3.7.2
 PyYAML==3.12
-requests==2.18.4
-urllib3==1.22
-python-crontab==2.3.6
+urllib3==1.2

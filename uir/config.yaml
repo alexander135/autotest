@@ -1,13 +1,31 @@
-PATH: http://asts-jenkins.moex.com/view/Rebus/job/
+PATH: http://asts-jenkins.moex.com/job/
 db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-06-14 10:11:27'
+last_update: '2019-06-18 11:35:18'
 name:
+  fond.unifiedpool.all:
+    id: 515
+    pk: 1
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
   rebus.all:
-    id: 687
+    id: 689
     pk: 2
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
+  rebus.all.long:
+    id: 136
+    pk: 1
     to_sum:
       1:
       - Tests

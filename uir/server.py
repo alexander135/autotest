@@ -1,14 +1,13 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, abort
 
 import json
 import yaml
 import pymongo
 from update import update as upd
-from crontab import CronTab
 import os
 import logging
 import logging.config
-
+import threading, time
 app = Flask(__name__)
 
 
@@ -20,12 +19,16 @@ logger = logging.getLogger('server')
 logger.info('server started')
 
 
-my_cron = CronTab(user = "1556") # 2 crons after first run???
-my_cron.remove_all()
-job = my_cron.new(command='/usr/bin/python3.6 /code/uir/update.py') #fix python and script paths
-job.minute.every(1)
-my_cron.write()
-logger.info('job started')
+conn = pymongo.MongoClient(config['db']['host'], config['db']['port'])
+
+
+def scheduler(time, updating_scripts):
+    t= threading.Timer(time,scheduler,[time, updating_scripts])
+    t.start()
+    for script in updating_scripts:
+        script(conn)
+
+scheduler(3600.0, [upd])
 
 
 
@@ -40,11 +43,12 @@ def index():
 def present(jobname, pk):
     config = yaml.load(open('config.yaml'))
     pk = int(pk)
+    if pk > config['name'][jobname]['pk']:
+        abort (404)
     if request.args.get('mes', None):
         message = request.args.get('mes', None)
     else:
         message = ''
-    conn = pymongo.MongoClient(config['db']['host'], config['db']['port'])
     db = conn.testresults
     coll = db[jobname]
     total = coll.find().count()
@@ -79,7 +83,7 @@ def present(jobname, pk):
 
 @app.route("/jobs/<jobname>/<pk>/update")
 def update(jobname, pk):
-    if upd():
+    if upd(conn)[jobname]:
         config = yaml.load(open('config.yaml'))
         return redirect(url_for('present',jobname = jobname, pk = config['name'][jobname]['pk'], mes = 'done'))
     else:
