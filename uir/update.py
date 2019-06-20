@@ -12,6 +12,8 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 #bootstrap?? design, little js(выпадающие окошки, пофиксить надпись об обновлении)
+#grid,
+
 
 config = yaml.load(open('config.yaml'))
 logger_conf = yaml.load(open('logger_conf.yaml'))

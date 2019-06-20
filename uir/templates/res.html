@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-<a href =/ ><button class = main-but> Home</button></a>
 
-
-<div class = info>
-{% for key,value in results['job'].items() %}
-    {% if key == 'name' %}
-    <h1>{{key}}: {{value}}</h1>
-    {% else %}
-    <span>
-        {{key}}: {{value}}; 
-    </span>
-    <br>
-    {% endif %}
-{% endfor %}
+<div class = container>
+    <div class = title>
+        <a class = main-but href =/ ><button> Home</button></a>
+        <h1 class = name>Job : {{results['job']['name']}}</h1>
+    </div>
+<div class = content>
+<div class =spoiler>
+    <span class = blue>Info</span>
+    <input type = checkbox>
+        <div class = info>
+        {% for key,value in results['job'].items() if key!='name' %}
+            <span>
+            {{key}}: {{value}}; 
+            </span>
+            <br>
+        {% endfor %}
         <span>Data was updated {{last_update}}</span>
+        </div>
 </div>
 
 {% if not successfull %}
@@ -22,11 +26,12 @@
 {% else %}
     {% set class = '' %}
 {% endif %}
+<div class = tables>
         <table class = {{ class }}>
             <caption>
                     Tests results
             </caption> 
-            <tr>
+            <tr bgcolor="grey">
                 <td>Test Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
@@ -53,7 +58,7 @@
             <caption>
                     Summed tests results
             </caption> 
-            <tr>
+            <tr bgcolor="grey">
                 <td>Tests Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
@@ -74,6 +79,8 @@
                 </tr>
             {% endfor %}
         </table>
+        </div>
+        </div>
         <div class = but>
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button> previous </button></a>
@@ -83,8 +90,8 @@
             {% endif %}
             <a href = "./{{pk}}/update"><button> update </button></a>
             {% if message %}
-            <h2> {{message}}</h2>
+            <h2 class = mes> {{message}}</h2>
             {% endif %}
         </div>
-
+</div>
 {% endblock %}

@@ -13,8 +13,6 @@ services:
       - db
   db: 
     image: mongo:4.1
-    ports:
-      - "27015:27017"
     networks:
       - net
 networks:
