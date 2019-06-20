@@ -17,16 +17,11 @@
         <span>Data was updated {{last_update}}</span>
 </div>
 
-{% if not successfull %}
-    {% set class = 'bad' %} 
-{% else %}
-    {% set class = '' %}
-{% endif %}
         <table class = {{ class }}>
             <caption>
                     Tests results
             </caption> 
-            <tr>
+            <tr bgcolor = 'silver'>
                 <td>Test Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
@@ -37,11 +32,11 @@
             
             {% for name in results %}
                 {% if name != 'job' and name != '_id' %}
-                    <tr>
+                    <tr bgcolor = {{ results[name]['color']}}>
                         <td>{{name}}</td>
-                        {% for i in results[name].values() %}
+                        {% for i in results[name] if i != 'color' %}
 
-                        <td>{{i}}</td>
+                        <td>{{results[name][i]}}</td>
                     
                     {% endfor %}
                 </tr>
@@ -53,7 +48,7 @@
             <caption>
                     Summed tests results
             </caption> 
-            <tr>
+            <tr bgcolor = 'silver'>
                 <td>Tests Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
@@ -62,13 +57,13 @@
                 <td>Success %</td>
             </tr>
             {% for name in summed_res.keys() %}
-                <tr>
+                <tr bgcolor = {{ summed_res[name]['color']}}>
                     <td>
                         {{name}}
                     </td>
-                    {% for i in summed_res[name].values() %}
+                    {% for i in summed_res[name] if i != 'color' %}
                     <td>
-                        {{ i }}
+                        {{ summed_res[name][i] }}
                     </td>
                     {% endfor %}
                 </tr>

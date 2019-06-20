@@ -58,6 +58,13 @@ def present(jobname, pk):
     for test_name in c:
         if test_name != 'job' and test_name != '_id':
             c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
+            if c[test_name]['succeed'] <= config['color']['bot']:
+                c[test_name]['color'] = '#FF4500'
+            elif c[test_name]['succeed'] >= config['color']['top']:
+                c[test_name]['color'] = '#32CD3'
+            else:
+                c[test_name]['color'] = 'gold'
+
     
     
     summed_res = {} 
@@ -76,11 +83,15 @@ def present(jobname, pk):
                     summed[j] += c[i][j]
         summed_res[sum_name] = summed
         summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
-                                                (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2)
-        if summed_res[sum_name]['succeed'] <= 95:
-            successfull = False 
-            
-    return render_template('res.html',last_update = script_time, successfull = successfull, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+                                                (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2) 
+        if summed_res[sum_name]['succeed'] <= config['color']['bot']:
+            summed_res[sum_name]['color'] = '#FF4500'
+        elif summed_res[sum_name]['succeed'] >= config['color']['top']:
+            summed_res[sum_name]['color'] = '#32CD3'
+        else:
+            summed_res[sum_name]['color'] = 'gold'
+
+    return render_template('res.html',last_update = script_time, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")
