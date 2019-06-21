@@ -1,27 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-<a href =/ ><button class = main-but> Home</button></a>
 
-
-<div class = info>
-{% for key,value in results['job'].items() %}
-    {% if key == 'name' %}
-    <h1>{{key}}: {{value}}</h1>
-    {% else %}
-    <span>
-        {{key}}: {{value}}; 
-    </span>
-    <br>
-    {% endif %}
-{% endfor %}
+<div class = container>
+    <div class = title>
+        <a class = main-but href =/ ><button> Home</button></a>
+        <h1 class = name>Job : {{results['job']['name']}}</h1>
+    </div>
+<div class = content>
+<div class =spoiler>
+    <span class = blue>Info</span>
+    <input type = checkbox>
+        <div class = info>
+        {% for key,value in results['job'].items() if key!='name' %}
+            <span>
+            {{key}}: {{value}}; 
+            </span>
+            <br>
+        {% endfor %}
         <span>Data was updated {{last_update}}</span>
+        </div>
 </div>
 
+<div class = tables>
         <table class = {{ class }}>
             <caption>
                     Tests results
             </caption> 
-            <tr bgcolor = 'silver'>
+            <tr bgcolor="silver">
                 <td>Test Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
@@ -32,11 +37,11 @@
             
             {% for name in results %}
                 {% if name != 'job' and name != '_id' %}
-                    <tr bgcolor = {{ results[name]['color']}}>
+                    <tr  bgcolor = {{ results[name]['color']}}>
                         <td>{{name}}</td>
-                        {% for i in results[name] if i != 'color' %}
+                        {% for i in results[name] if i != 'color'%}
 
-                        <td>{{results[name][i]}}</td>
+                        <td>{{ results[name][i]}}</td>
                     
                     {% endfor %}
                 </tr>
@@ -48,7 +53,7 @@
             <caption>
                     Summed tests results
             </caption> 
-            <tr bgcolor = 'silver'>
+            <tr bgcolor="silver">
                 <td>Tests Type</td>
                 <td>Passed</td>
                 <td>Failed</td>
@@ -57,7 +62,7 @@
                 <td>Success %</td>
             </tr>
             {% for name in summed_res.keys() %}
-                <tr bgcolor = {{ summed_res[name]['color']}}>
+                <tr bgcolor ={{ summed_res[name]['color']}}>
                     <td>
                         {{name}}
                     </td>
@@ -69,17 +74,19 @@
                 </tr>
             {% endfor %}
         </table>
+        </div>
+        </div>
         <div class = but>
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button> previous </button></a>
             {% endif %}
+            <a href = "./{{pk}}/update"><button> update </button></a>
             {% if total > pk %}
             <a href = "./{{pk+1}}"><button> next </button></a>
             {% endif %}
-            <a href = "./{{pk}}/update"><button> update </button></a>
-            {% if message %}
-            <h2> {{message}}</h2>
-            {% endif %}
         </div>
-
+            {% if message %}
+            <h2 class = mes> {{message}}</h2>
+            {% endif %}
+</div>
 {% endblock %}
