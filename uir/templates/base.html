@@ -3,11 +3,13 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <head>
+    </head>
     <body>
         <div>
             {% block content %}{% endblock %}
         </div>
-    <script src = "{{url_for('static', filename = 'js/bootstrap.min.js')}}">
+    <script src = "{{url_for('static', filename = 'js/bootstrap.min.js')}}"></script>
+    {% block script %}
+    {% endblock %}
     </body>
-<html>
+</html>

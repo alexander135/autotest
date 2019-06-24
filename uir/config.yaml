@@ -6,11 +6,11 @@ db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-06-24 07:26:40'
+last_update: '2019-06-24 14:37:27'
 name:
   fond.unifiedpool.all:
-    id: 518
-    pk: 5
+    id: 519
+    pk: 6
     to_sum:
       1:
       - Tests

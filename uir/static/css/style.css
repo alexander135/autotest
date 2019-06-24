@@ -48,10 +48,11 @@ h1{
     text-align: center;
     font-size: 3vw;
 }
-
+i{
+    font-size:1.8vw;
+}
 span{
     font-size: 1.5vw;
-    margin-right: 20px;
 }
 h2{
     font-size: 1.5vw;
@@ -87,7 +88,7 @@ h2{
 .spoiler > input:checked + .info{
     display: block;
 }
-input{
+input[type = 'checkbox'] {
     cursor: pointer;
     width: 400px;
     height: 32px;
@@ -104,6 +105,7 @@ input{
     grid-template-columns: min-content 10fr;
     background: grey;
     border-bottom: 2px solid black;
+    padding: 1vw;
 }
 .tables{
     display:grid;

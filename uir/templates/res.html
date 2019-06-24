@@ -18,6 +18,14 @@
             <br>
         {% endfor %}
         <span>Data was updated {{last_update}}</span>
+        <br>
+        <span>Comment: {% if results['job']['comment'] %} {{ results['job']['comment'] }}{% endif %}
+        <form id = 'comment-form' method = "POST" style = "display:none">
+        <input type = 'text' value = {{results['job']['comment']}}>
+        </form>
+        <i class = "far fa-edit" href = ""></i>
+        
+        </span>
         </div>
 </div>
 
@@ -78,11 +86,11 @@
         </div>
         <div class = but>
             {% if pk > 1 %}
-            <a href = "./{{pk-1}}"><button><span class ="fas fa-long-arrow-alt-left"></span></button></a>
+            <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>
             {% endif %}
             <a href = "./{{pk}}/update"><button> update </button></a>
             {% if total > pk %}
-            <a href = "./{{pk+1}}"><button> next </button></a>
+            <a href = "./{{pk+1}}"><button><i class = "fas fa-long-arrow-alt-right"></i></button></a>
             {% endif %}
         </div>
             {% if message %}
@@ -90,3 +98,11 @@
             {% endif %}
 </div>
 {% endblock %}
+
+{% block script %}
+
+<script src = "{{url_for('static', filename = 'js/edit_form.js')}}"></script>
+
+{% endblock %}
+
+

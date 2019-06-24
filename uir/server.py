@@ -8,6 +8,7 @@ import os
 import logging
 import logging.config
 import threading, time
+from collections import OrderedDict
 app = Flask(__name__)
 
 
@@ -52,7 +53,9 @@ def present(jobname, pk):
     db = conn.testresults
     coll = db[jobname]
     total = coll.find().count()
-    c = coll.find_one({"job.pk": pk})
+    c = coll.find_one({"job.pk" : pk})
+    dict_for_sum = coll.find_one({"job.pk" : pk})
+    prev = coll.find_one({"job.pk" : pk-1})
     last_id = config['name'][jobname]['id']
     script_time = config['last_update']
     for test_name in c:
@@ -64,7 +67,12 @@ def present(jobname, pk):
                 c[test_name]['color'] = 'bg-success'
             else:
                 c[test_name]['color'] = 'bg-warning'
-
+            if prev:
+                dif = c[test_name]['total'] - prev[test_name]['total']
+                if dif>=0:
+                    dif = '+' + str(dif)
+                c[test_name]['total'] = str(c[test_name]['total']) + '(' + str(dif) + ")"
+            
     
     
     summed_res = {} 
@@ -76,11 +84,11 @@ def present(jobname, pk):
             if sum_name != '':
                 sum_name += '+'
             sum_name += i
-            for j in c[i].keys():
+            for j in dict_for_sum[i].keys():
                 if j not in summed.keys():
-                    summed[j] = c[i][j]
+                    summed[j] = dict_for_sum[i][j]
                 else:
-                    summed[j] += c[i][j]
+                    summed[j] += dict_for_sum[i][j]
         summed_res[sum_name] = summed
         summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2) 
@@ -90,8 +98,7 @@ def present(jobname, pk):
             summed_res[sum_name]['color'] = 'bg-success'
         else:
             summed_res[sum_name]['color'] = 'bg-warning'
-
-    return render_template('res.html',last_update = script_time, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html',last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")
