@@ -59,11 +59,11 @@ def present(jobname, pk):
         if test_name != 'job' and test_name != '_id':
             c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
             if c[test_name]['succeed'] <= config['color']['bot']:
-                c[test_name]['color'] = '#FF4500'
+                c[test_name]['color'] = 'bg-danger'
             elif c[test_name]['succeed'] >= config['color']['top']:
-                c[test_name]['color'] = '#32CD3'
+                c[test_name]['color'] = 'bg-success'
             else:
-                c[test_name]['color'] = 'gold'
+                c[test_name]['color'] = 'bg-warning'
 
     
     
@@ -85,11 +85,11 @@ def present(jobname, pk):
         summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2) 
         if summed_res[sum_name]['succeed'] <= config['color']['bot']:
-            summed_res[sum_name]['color'] = '#FF4500'
+            summed_res[sum_name]['color'] = 'bg-danger'
         elif summed_res[sum_name]['succeed'] >= config['color']['top']:
-            summed_res[sum_name]['color'] = '#32CD3'
+            summed_res[sum_name]['color'] = 'bg-success'
         else:
-            summed_res[sum_name]['color'] = 'gold'
+            summed_res[sum_name]['color'] = 'bg-warning'
 
     return render_template('res.html',last_update = script_time, results = c, pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 

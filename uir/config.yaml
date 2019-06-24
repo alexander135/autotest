@@ -6,28 +6,10 @@ db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-06-21 13:58:32'
+last_update: '2019-06-24 07:26:40'
 name:
   fond.unifiedpool.all:
-    id: 517
-    pk: 4
-    to_sum:
-      1:
-      - Tests
-      - SmokeTests
-      2:
-      - FunctionalTests
-  fond.unifiedpool.all.long:
-    id: 219
-    pk: 2
-    to_sum:
-      1:
-      - Tests
-      - SmokeTests
-      2:
-      - FunctionalTests
-  rebus.all:
-    id: 692
+    id: 518
     pk: 5
     to_sum:
       1:
@@ -35,9 +17,27 @@ name:
       - SmokeTests
       2:
       - FunctionalTests
+  fond.unifiedpool.all.long:
+    id: 220
+    pk: 3
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
+  rebus.all:
+    id: 693
+    pk: 6
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
   rebus.all.long:
-    id: 136
-    pk: 1
+    id: 137
+    pk: 2
     to_sum:
       1:
       - Tests
