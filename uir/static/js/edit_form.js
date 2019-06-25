@@ -1,11 +1,13 @@
 $(document).ready(function(){
     $("body").on('click',"#edit_form",function(e){
 
-            if ($(this).css("display") == none){
-                $(this).css("display","inline");
+            if ($("#comment-form").css("display") == "none"){
+                $('#comment-form').css("display","inline");
+                $(this).attr("class", "fas fa-arrow-left");
             }
             else{
-                $(this).css("display", "none");
+                $("#comment-form").css("display", "none");
+                $(this).attr("class", "fas fa-edit");
                 }
         })
     })

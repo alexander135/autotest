@@ -19,11 +19,12 @@
         {% endfor %}
         <span>Data was updated {{last_update}}</span>
         <br>
-        <span>Comment: {% if results['job']['comment'] %} {{ results['job']['comment'] }}{% endif %}
+        <span>Comment: <span id = "comment">{% if results['comment'] %} {{ results['comment'] }}{% endif %}</span>
         <form id = 'comment-form' method = "POST" style = "display:none">
-        <input type = 'text' value = {{results['job']['comment']}}>
+        {{form.comment()}}
+        {{form.submit()}}
         </form>
-        <i class = "far fa-edit" href = ""></i>
+        <i class = "far fa-edit" id = "edit_form"></i>
         
         </span>
         </div>
@@ -102,7 +103,7 @@
 {% block script %}
 
 <script src = "{{url_for('static', filename = 'js/edit_form.js')}}"></script>
-
+<script src = '{{url_for('static', filename = 'js/form_submit.js')}}'></script>
 {% endblock %}
 
 

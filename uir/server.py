@@ -9,8 +9,11 @@ import logging
 import logging.config
 import threading, time
 from collections import OrderedDict
-app = Flask(__name__)
 
+from forms import CommentForm
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'key'
 
 config = yaml.load(open('config.yaml'))
 logger_conf = yaml.load(open('logger_conf.yaml'))
@@ -40,7 +43,7 @@ def index():
     return render_template('index.html', jobnames = names)
 
 
-@app.route("/jobs/<jobname>/<pk>")
+@app.route("/jobs/<jobname>/<pk>", methods = ['GET', 'POST'])
 def present(jobname, pk):
     config = yaml.load(open('config.yaml'))
     pk = int(pk)
@@ -55,6 +58,9 @@ def present(jobname, pk):
     total = coll.find().count()
     c = coll.find_one({"job.pk" : pk})
     dict_for_sum = coll.find_one({"job.pk" : pk})
+    form = CommentForm()
+    if 'comment' in c.keys():
+        form.comment.data = c['comment']
     prev = coll.find_one({"job.pk" : pk-1})
     last_id = config['name'][jobname]['id']
     script_time = config['last_update']
@@ -98,7 +104,7 @@ def present(jobname, pk):
             summed_res[sum_name]['color'] = 'bg-success'
         else:
             summed_res[sum_name]['color'] = 'bg-warning'
-    return render_template('res.html',last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html',form = form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")
@@ -108,6 +114,15 @@ def update(jobname, pk):
         return redirect(url_for('present',jobname = jobname, pk = config['name'][jobname]['pk'], mes = 'done'))
     else:
         return redirect(url_for('present',jobname = jobname, pk = pk, mes = 'already up to date'))
+
+
+@app.route("/jobs/<jobname>/<pk>/editComment", methods = ['GET', 'POST'])
+def comment(jobname,pk):
+    form = CommentForm(request.POST)
+    if form.validate_on_submit():
+        db = conn.testresults
+        db[jobname].update_one({"job.pk": int(pk)}, {"$set": {comment : form.comment.data}}, upsert = False)
+        return form.comment.data
 
 
 
