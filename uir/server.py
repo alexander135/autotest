@@ -59,8 +59,8 @@ def present(jobname, pk):
     c = coll.find_one({"job.pk" : pk})
     dict_for_sum = coll.find_one({"job.pk" : pk})
     form = CommentForm()
-    if 'comment' in c.keys():
-        form.comment.data = c['comment']
+    if 'comment' in c['job'].keys():
+        form.comment.data = c['job']['comment']
     prev = coll.find_one({"job.pk" : pk-1})
     last_id = config['name'][jobname]['id']
     script_time = config['last_update']
@@ -82,28 +82,30 @@ def present(jobname, pk):
     
     
     summed_res = {} 
-    successfull= True   
+    flag = False
     for type in config['name'][jobname]['to_sum']:              #create dict with summed tests from config
         sum_name =''
         summed = {}
         for i in config['name'][jobname]['to_sum'][type]:
-            if sum_name != '':
-                sum_name += '+'
-            sum_name += i
-            for j in dict_for_sum[i].keys():
-                if j not in summed.keys():
-                    summed[j] = dict_for_sum[i][j]
-                else:
-                    summed[j] += dict_for_sum[i][j]
-        summed_res[sum_name] = summed
-        summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
+            if i in dict_for_sum.keys():
+                if sum_name != '':
+                    sum_name += '+'
+                sum_name += i
+                for j in dict_for_sum[i].keys():
+                    if j not in summed.keys():
+                        summed[j] = dict_for_sum[i][j]
+                    else:
+                        summed[j] += dict_for_sum[i][j]
+        if sum_name != '':
+            summed_res[sum_name] = summed
+            summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2) 
-        if summed_res[sum_name]['succeed'] <= config['color']['bot']:
-            summed_res[sum_name]['color'] = 'bg-danger'
-        elif summed_res[sum_name]['succeed'] >= config['color']['top']:
-            summed_res[sum_name]['color'] = 'bg-success'
-        else:
-            summed_res[sum_name]['color'] = 'bg-warning'
+            if summed_res[sum_name]['succeed'] <= config['color']['bot']:
+                summed_res[sum_name]['color'] = 'bg-danger'
+            elif summed_res[sum_name]['succeed'] >= config['color']['top']:
+                summed_res[sum_name]['color'] = 'bg-success'
+            else:
+                summed_res[sum_name]['color'] = 'bg-warning'
     return render_template('res.html',form = form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
@@ -118,11 +120,13 @@ def update(jobname, pk):
 
 @app.route("/jobs/<jobname>/<pk>/editComment", methods = ['GET', 'POST'])
 def comment(jobname,pk):
-    form = CommentForm(request.POST)
+    form = CommentForm()
+    logger.info(form.validate_on_submit())
     if form.validate_on_submit():
         db = conn.testresults
-        db[jobname].update_one({"job.pk": int(pk)}, {"$set": {comment : form.comment.data}}, upsert = False)
+        db[jobname].update_one({"job.pk": int(pk)}, {"$set": {'job.comment' : form.comment.data}}, upsert = False)
         return form.comment.data
+    return form.comment.data
 
 
 

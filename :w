@@ -30,14 +30,16 @@
         </span>
         </div>
 </div>
-<div class = "parameters info">
-   <span><h2>Parameters:</h2></span>
+<div class = parameters>
+   <div class = info> 
+   <span><h2>Parameters</h2></span>
    {% if 'parameters' in results['job'].keys() %}
         {% for key,value in results['job']['parameters'].items() %}
             <span> {{key}}: {{value}}</span>
             <br>
         {% endfor %}
     {% endif %}
+   </div>
 </div>
 <div class = tables>
         <table class = {{ class }}>

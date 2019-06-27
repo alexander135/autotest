@@ -3,3 +3,4 @@ pymongo==3.7.2
 PyYAML==3.12
 urllib3==1.2
 Flask-WTF==0.14.2
+beautifulsoup4==4.7.1

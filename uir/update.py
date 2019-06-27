@@ -7,11 +7,11 @@ from datetime import datetime
 import os
 import logging
 import logging.config
+from bs4 import BeautifulSoup
+
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-
-#bootstrap?? design, little js(выпадающие окошки, пофиксить надпись об обновлении)
 
 config = yaml.load(open('config.yaml'))
 logger_conf = yaml.load(open('logger_conf.yaml'))
@@ -60,8 +60,22 @@ def update(conn):
                                     res[name]['failed'] += 1
                             else:
                                 res[name]['skipped'] += 1
-
-
+                            
+                        soup = BeautifulSoup(urllib.request.urlopen(config['PATH'] + curname + '/' + cur['id'] + '/parameters/'), "html.parser")
+                        names = soup.select('.setting-name')
+                        name_list = []
+                        value_list = []
+                        logger.info(names)
+                        for name in names:
+                            name_list.append(name.string)
+                        for tag in soup("input"):
+                            logger.info(tag)
+                            if tag.has_attr("value"):
+                                value_list.append(tag["value"])
+                        logger.info(value_list)        
+                        parameters = dict(zip(name_list, value_list))
+                        logger.info(parameters)
+                        res["job"]["parameters"] = parameters 
 
                         pk = mongoSave(res,curname,conn)
 
@@ -96,9 +110,9 @@ def update(conn):
                             res[name]['failed'] += 1
                     else:
                         res[name]['skipped'] += 1
-
-
-
+                        
+                        
+                        
                 pk = mongoSave(res,curname,conn)
 
                 config['name'][curname]['id'] = int(cur['id'])
