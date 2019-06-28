@@ -1,14 +1,14 @@
 PATH: http://asts-jenkins.moex.com/job/
-color:
-  bot: 95
-  top: 99
 db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-06-27 13:13:12'
+last_update: '2019-06-28 12:36:06'
 name:
   fond.unifiedpool.all:
+    color:
+      bot: 95
+      top: 99
     id: 522
     pk: 9
     to_sum:
@@ -18,8 +18,11 @@ name:
       2:
       - FunctionalTests
   fond.unifiedpool.all.long:
-    id: 220
-    pk: 3
+    color:
+      bot: 95
+      top: 99
+    id: 221
+    pk: 4
     to_sum:
       1:
       - Tests
@@ -27,8 +30,11 @@ name:
       2:
       - FunctionalTests
   rebus.all:
-    id: 698
-    pk: 11
+    color:
+      bot: 95
+      top: 99
+    id: 700
+    pk: 13
     to_sum:
       1:
       - Tests
@@ -36,6 +42,9 @@ name:
       2:
       - FunctionalTests
   rebus.all.long:
+    color:
+      bot: 95
+      top: 99
     id: 137
     pk: 2
     to_sum:

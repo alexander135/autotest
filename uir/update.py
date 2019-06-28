@@ -31,6 +31,7 @@ urllib.request.install_opener(opener)
 
 def update(conn):
     res = {}
+    result = {}
     logger.info('updating script started')
     config = yaml.load(open('config.yaml'))
     config['last_update'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
@@ -40,12 +41,25 @@ def update(conn):
         curpath = config['PATH'] + curname + '/lastCompletedBuild/api/python?pretty=true'
         cur = eval(urllib.request.urlopen(curpath).read())
         if conn.testresults[curname].count():
-                logger.info(conn.testresults[curname].count())
                 if int(cur['id']) != (config['name'][curname]['id']):     
+                        path = config['PATH'] + curname + '/' + cur['id'] + '/testReport/api/python?pretty=true'
+                        res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
+                        try:
+                            urllib.request.urlopen(path)
+                        except:
+                            logger.critical(path + ' error ')
+                            result[curname] = 'Done'
+                            pk = mongoSave(res,curname,conn)
+                            
+                            config['name'][curname]['id'] = int(cur['id'])
+                            config['name'][curname]['pk'] = pk
+                        
+                        
+                            with open('config.yaml', 'w') as f:
+                                yaml.dump(config, f, default_flow_style=False)
+                            continue
                         logger.info('some new results were found')
                         names = []
-                        res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
-                        path = config['PATH'] + curname + '/' + cur['id'] + '/testReport/api/python?pretty=true'
                         obj = eval(urllib.request.urlopen(path).read())
                         for i in obj['suites'][0]['cases']:
                             name = re.findall(r'\..+\.', i['className'])[0].split('.')[1]
@@ -65,16 +79,13 @@ def update(conn):
                         names = soup.select('.setting-name')
                         name_list = []
                         value_list = []
-                        logger.info(names)
                         for name in names:
                             name_list.append(name.string)
                         for tag in soup("input"):
                             logger.info(tag)
                             if tag.has_attr("value"):
                                 value_list.append(tag["value"])
-                        logger.info(value_list)        
                         parameters = dict(zip(name_list, value_list))
-                        logger.info(parameters)
                         res["job"]["parameters"] = parameters 
 
                         pk = mongoSave(res,curname,conn)
@@ -87,10 +98,11 @@ def update(conn):
                             yaml.dump(config, f, default_flow_style=False)
 
                         logger.info('test results have been updated')
-                        res[curname] = 'Done'
+                        result[curname] = 'Done'
                 else:
-                        logger.info('already up to date')
-                        res[curname] = 0
+                        logger.info(curname + ' already up to date')
+                        result[curname] = 0
+                        logger.info(result)
         else:
                 logger.info('some new results were found')
                 names = []
@@ -123,8 +135,8 @@ def update(conn):
                     yaml.dump(config, f, default_flow_style=False)
 
                 logger.info('test results have been updated')
-                res[curname] = 'Done'
-    return res 
+                result[curname] = 'Done'
+    return result 
  
 
 def mongoSave(result, jobname, conn):

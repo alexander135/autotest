@@ -94,6 +94,15 @@
         </table>
         </div>
         </div>
+<form method = 'POST' class = color_form >
+    <label>Color tresholds:</label><br>
+    {{color_config_form.csrf_token}}
+    {{color_config_form.bot.label}}:
+    {{color_config_form.bot()}}<br>
+    {{color_config_form.top.label}}:
+    {{color_config_form.top()}}<br>
+    {{color_config_form.submit()}}
+</form> 
         <div class = but>
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>

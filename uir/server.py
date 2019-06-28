@@ -10,7 +10,7 @@ import logging.config
 import threading, time
 from collections import OrderedDict
 
-from forms import CommentForm
+from forms import CommentForm, ColorConfigForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key'
@@ -59,6 +59,15 @@ def present(jobname, pk):
     c = coll.find_one({"job.pk" : pk})
     dict_for_sum = coll.find_one({"job.pk" : pk})
     form = CommentForm()
+    color_config_form = ColorConfigForm()
+    if color_config_form.validate_on_submit():
+        config['name'][jobname]['color']['bot'] = color_config_form.bot.data
+        config['name'][jobname]['color']['top'] = color_config_form.top.data
+        with open('config.yaml', 'w') as f:
+            yaml.dump(config, f, default_flow_style=False)
+        return redirect('')
+    color_config_form.bot.data = config['name'][jobname]['color']['bot']
+    color_config_form.top.data = config['name'][jobname]['color']['top']
     if 'comment' in c['job'].keys():
         form.comment.data = c['job']['comment']
     prev = coll.find_one({"job.pk" : pk-1})
@@ -67,9 +76,9 @@ def present(jobname, pk):
     for test_name in c:
         if test_name != 'job' and test_name != '_id':
             c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
-            if c[test_name]['succeed'] <= config['color']['bot']:
+            if c[test_name]['succeed'] <= config['name'][jobname]['color']['bot']:
                 c[test_name]['color'] = 'bg-danger'
-            elif c[test_name]['succeed'] >= config['color']['top']:
+            elif c[test_name]['succeed'] >= config['name'][jobname]['color']['top']:
                 c[test_name]['color'] = 'bg-success'
             else:
                 c[test_name]['color'] = 'bg-warning'
@@ -100,13 +109,13 @@ def present(jobname, pk):
             summed_res[sum_name] = summed
             summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2) 
-            if summed_res[sum_name]['succeed'] <= config['color']['bot']:
+            if summed_res[sum_name]['succeed'] <= config['name'][jobname]['color']['bot']:
                 summed_res[sum_name]['color'] = 'bg-danger'
-            elif summed_res[sum_name]['succeed'] >= config['color']['top']:
+            elif summed_res[sum_name]['succeed'] >= config['name'][jobname]['color']['top']:
                 summed_res[sum_name]['color'] = 'bg-success'
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
-    return render_template('res.html',form = form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html',form = form, color_config_form = color_config_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")

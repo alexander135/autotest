@@ -125,7 +125,11 @@ input[type = 'checkbox'] {
     grid-column: 2/3;
     justify-self:end;
     margin-right:1vw;
-    }
+}
+.color_form{
+    padding: 1vw;
+    grid-column: 1/2;    
+}
 @keyframes disappearing{
    80%, 100%{visibility: hidden;}
 }
