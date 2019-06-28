@@ -3,7 +3,7 @@ db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-06-28 12:36:06'
+last_update: '2019-06-28 14:06:02'
 name:
   fond.unifiedpool.all:
     color:

@@ -4,6 +4,7 @@ import json
 import yaml
 import pymongo
 from update import update as upd
+from update import update_one
 import os
 import logging
 import logging.config
@@ -136,6 +137,18 @@ def comment(jobname,pk):
         db[jobname].update_one({"job.pk": int(pk)}, {"$set": {'job.comment' : form.comment.data}}, upsert = False)
         return form.comment.data
     return form.comment.data
+
+@app.route("/test")
+def replace():
+    k = 0
+    config = yaml.load(open('config.yaml'))
+    for name in config['name']:
+        total = conn.testresults[name].find().count()
+        for i in range(1, total+1):
+            update_one(name,i,conn)
+            k+=1
+    return str(k);
+
 
 
 

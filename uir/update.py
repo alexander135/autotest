@@ -123,6 +123,18 @@ def update(conn):
                     else:
                         res[name]['skipped'] += 1
                         
+                soup = BeautifulSoup(urllib.request.urlopen(config['PATH'] + curname + '/' + cur['id'] + '/parameters/'), "html.parser")
+                names = soup.select('.setting-name')
+                name_list = []
+                value_list = []
+                for name in names:
+                    name_list.append(name.string)
+                for tag in soup("input"):
+                    if tag.has_attr("value"):
+                        value_list.append(tag["value"])
+                parameters = dict(zip(name_list, value_list))
+                res["job"]["parameters"] = parameters 
+
                         
                         
                 pk = mongoSave(res,curname,conn)
@@ -149,5 +161,29 @@ def mongoSave(result, jobname, conn):
     db_logger.info('saved to db')
     return result['job']['pk']
     
+    
+def update_one(jobname, pk, conn):    
+    res = conn.testresults[jobname].find_one({"job.pk": int(pk)})
+    logger.info(res)
+    path = config['PATH'] + jobname + '/' + str(res['job']['id']) + '/testReport/api/python?pretty=true'
+    try:
+        urllib.request.urlopen(path)
+    except:
+        logger.critical(path + ' error ')
+        return False
+    soup = BeautifulSoup(urllib.request.urlopen(config['PATH'] + jobname + '/' + str(res['job']['id']) + '/parameters/'), "html.parser")
+    names = soup.select('.setting-name')
+    name_list = []
+    value_list = []
+    for name in names:
+        name_list.append(name.string)
+    for tag in soup("input"):
+        if tag.has_attr("value"):
+            value_list.append(tag["value"])
+    parameters = dict(zip(name_list, value_list))
+    res["job"]["parameters"] = parameters 
+    result = conn.testresults[jobname].replace_one({"job.pk": int(pk)}, res)
+    return result.modified_count
+     
 if __name__ == '__main__':
     update()
