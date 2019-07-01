@@ -58,6 +58,25 @@ def present(jobname, pk):
     coll = db[jobname]
     total = coll.find().count()
     c = coll.find_one({"job.pk" : pk})
+
+    data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}
+    if 'parameters' in c['job'].keys():
+        if 'GITREVISION' in c['job']['parameters'].keys():
+            i = 0
+            for item in db[jobname].find():
+                if 'parameters' in item['job'].keys():
+                    if item['job']['parameters']['GITREVISION'] == c['job']['parameters']['GITREVISION']:
+                        for test_name in item:
+                            if test_name != '_id' and test_name != 'job':
+                                for status in item[test_name]:
+                                    if status != 'total':
+                                        if len(data[status]) == i:
+                                            data[status].append(item[test_name][status])
+                                        else:
+                                            data[status][i] += item[test_name][status]
+                        i+=1
+                        data['date'].append(item['job']['date'])
+
     dict_for_sum = coll.find_one({"job.pk" : pk})
     form = CommentForm()
     color_config_form = ColorConfigForm()
@@ -84,10 +103,11 @@ def present(jobname, pk):
             else:
                 c[test_name]['color'] = 'bg-warning'
             if prev:
-                dif = c[test_name]['total'] - prev[test_name]['total']
-                if dif>=0:
-                    dif = '+' + str(dif)
-                c[test_name]['total'] = str(c[test_name]['total']) + '(' + str(dif) + ")"
+                if test_name in prev.keys():
+                    dif = c[test_name]['total'] - prev[test_name]['total']
+                    if dif>=0:
+                        dif = '+' + str(dif)
+                    c[test_name]['total'] = str(c[test_name]['total']) + '(' + str(dif) + ")"
             
     
     
@@ -116,7 +136,7 @@ def present(jobname, pk):
                 summed_res[sum_name]['color'] = 'bg-success'
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
-    return render_template('res.html',form = form, color_config_form = color_config_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html', chart_data = data, form = form, color_config_form = color_config_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 
 @app.route("/jobs/<jobname>/<pk>/update")

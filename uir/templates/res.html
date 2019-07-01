@@ -116,12 +116,53 @@
             <h2 class = mes> {{message}}</h2>
             {% endif %}
 </div>
+{{chart_data}}
+<canvas id = 'LineChart' style="display: block; height: 385px; width: 770px;">
 {% endblock %}
 
 {% block script %}
 
 <script src = "{{url_for('static', filename = 'js/edit_form.js')}}"></script>
 <script src = '{{url_for('static', filename = 'js/form_submit.js')}}'></script>
+{% if chart_data['date']%}
+<script>
+var chartData = {
+    labels : [{% for date in chart_data['date'] %}
+    "{{ date }}",
+    {% endfor %}],
+    datasets: [{
+        label : 'Passed',
+        lineTension: 0.1,
+        backgroundColor: "rgba(40, 167, 69,0.5)",
+        fill: true,
+        data: [{% for passed in chart_data['passed'] %}
+        {{ passed }},
+        {% endfor %}],
+    },
+        {
+        label : 'Failed',
+        lineTension: 0.1,
+        backgroundColor: "rgba(220, 53, 69,0.5)",
+        fill: true,
+        data: [{% for failed in chart_data['failed'] %}
+        {{ failed }},
+        {% endfor %}]
+        },
+        {
+        label : 'Skipped',
+        lineTension: 0.1,
+        backgroundColor: "rgba(255, 193, 7, 0.5)",
+        fill: true,
+        data: [{% for skipped in chart_data['skipped'] %}
+        {{ skipped }},
+        {% endfor %}],
+        }
+
+]
+}
+</script>
+{% endif %}
+<script src = "{{url_for('static', filename = 'js/line_chart.js')}}"></script>
 {% endblock %}
 
 
