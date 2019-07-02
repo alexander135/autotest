@@ -94,6 +94,7 @@
         </table>
         </div>
         </div>
+        <div class = extra>
 <form method = 'POST' class = color_form >
     <label>Color tresholds:</label><br>
     {{color_config_form.csrf_token}}
@@ -103,6 +104,7 @@
     {{color_config_form.top()}}<br>
     {{color_config_form.submit()}}
 </form> 
+        <canvas id = 'LineChart' style="display: block; height: 385px; width: 770px;"></canvas>
         <div class = but>
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>
@@ -112,12 +114,11 @@
             <a href = "./{{pk+1}}"><button><i class = "fas fa-long-arrow-alt-right"></i></button></a>
             {% endif %}
         </div>
+        </div>
             {% if message %}
             <h2 class = mes> {{message}}</h2>
             {% endif %}
 </div>
-{{chart_data}}
-<canvas id = 'LineChart' style="display: block; height: 385px; width: 770px;">
 {% endblock %}
 
 {% block script %}
@@ -126,40 +127,8 @@
 <script src = '{{url_for('static', filename = 'js/form_submit.js')}}'></script>
 {% if chart_data['date']%}
 <script>
-var chartData = {
-    labels : [{% for date in chart_data['date'] %}
-    "{{ date }}",
-    {% endfor %}],
-    datasets: [{
-        label : 'Passed',
-        lineTension: 0.1,
-        backgroundColor: "rgba(40, 167, 69,0.5)",
-        fill: true,
-        data: [{% for passed in chart_data['passed'] %}
-        {{ passed }},
-        {% endfor %}],
-    },
-        {
-        label : 'Failed',
-        lineTension: 0.1,
-        backgroundColor: "rgba(220, 53, 69,0.5)",
-        fill: true,
-        data: [{% for failed in chart_data['failed'] %}
-        {{ failed }},
-        {% endfor %}]
-        },
-        {
-        label : 'Skipped',
-        lineTension: 0.1,
-        backgroundColor: "rgba(255, 193, 7, 0.5)",
-        fill: true,
-        data: [{% for skipped in chart_data['skipped'] %}
-        {{ skipped }},
-        {% endfor %}],
-        }
-
-]
-}
+var chart_data ={{ chart_data|tojson|safe }} 
+var Name = {{ results['job']['parameters']['GITREVISION']|tojson|safe if 'GITREVISION' in results['job']['parameters'].keys()}}
 </script>
 {% endif %}
 <script src = "{{url_for('static', filename = 'js/line_chart.js')}}"></script>

@@ -59,7 +59,12 @@ def present(jobname, pk):
     total = coll.find().count()
     c = coll.find_one({"job.pk" : pk})
 
-    data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}
+'''
+
+calculating data for chart
+
+'''
+    data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}                                         
     if 'parameters' in c['job'].keys():
         if 'GITREVISION' in c['job']['parameters'].keys():
             i = 0
@@ -76,6 +81,10 @@ def present(jobname, pk):
                                             data[status][i] += item[test_name][status]
                         i+=1
                         data['date'].append(item['job']['date'])
+'''
+
+'''
+
 
     dict_for_sum = coll.find_one({"job.pk" : pk})
     form = CommentForm()
