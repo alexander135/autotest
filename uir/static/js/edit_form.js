@@ -11,5 +11,9 @@ $(document).ready(function(){
                 $("#comment").css("display", 'inline');
                 $(this).attr("class", "fas fa-edit");
                 }
+        });
+    $("body").on('submit', '#active-form', function(e){
+        $("#active-button").attr("disabled", true)
+        e
         })
     })

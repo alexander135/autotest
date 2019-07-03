@@ -38,8 +38,8 @@ var LineChart = new Chart(ctx, {
             },
             onClick:
                 function(evt, item){
-                    console.log(item[0]['_index']);
-                    pk = item[0]['_index'] + 1;
+                    console.log(evt,item[0]['_index'], item);
+                    pk = item[0]['_chart']['config']['data']['labels'][item[0]['_index']][1];
                     if (pk >= 0){
                         location.href = pk
                         }

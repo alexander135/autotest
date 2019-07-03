@@ -40,8 +40,7 @@ def update(conn):
     for curname in config['name'].keys():
         curpath = config['PATH'] + curname + '/lastCompletedBuild/api/python?pretty=true'
         cur = eval(urllib.request.urlopen(curpath).read())
-        if conn.testresults[curname].count():
-                if int(cur['id']) != (config['name'][curname]['id']):     
+        if not conn.testresults[curname].count() or (int(cur['id']) != (config['name'][curname]['id'])):     
                         path = config['PATH'] + curname + '/' + cur['id'] + '/testReport/api/python?pretty=true'
                         res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
                         try:
@@ -57,24 +56,29 @@ def update(conn):
                         
                             with open('config.yaml', 'w') as f:
                                 yaml.dump(config, f, default_flow_style=False)
-                            continue
+                            continue 
+
                         logger.info('some new results were found')
-                        names = []
-                        obj = eval(urllib.request.urlopen(path).read())
-                        for i in obj['suites'][0]['cases']:
-                            name = re.findall(r'\..+\.', i['className'])[0].split('.')[1]
-                            if name not in res.keys():
-                                names.append(name)
-                                res[name] = {'passed':0, 'failed':0, 'skipped':0, 'total':0}
-                            res[name]['total'] += 1
-                            if i['skipped'] == False:
-                                if (i['status'] != 'FAILED') and (i['status'] != 'REGRESSION'):
-                                    res[name]['passed'] += 1
+
+                        try:
+                            for subbuild in cur['subBuilds']:
+                                if subbuild['result']:
+                                    path = top_level_url + subbuild['url'] + 'testReport/api/python?pretty=true'
                                 else:
-                                    res[name]['failed'] += 1
-                            else:
-                                res[name]['skipped'] += 1
-                            
+                                    continue
+                                
+                                try:
+                                    urllib.request.urlopen(path)  
+                                except:
+                                    continue
+
+                                obj = eval(urllib.request.urlopen(path).read())
+                                count_res(obj, res)
+                        except:
+                            obj = eval(urllib.request.urlopen(path).read())
+                            count_res(obj, res)
+
+                                                                    
                         soup = BeautifulSoup(urllib.request.urlopen(config['PATH'] + curname + '/' + cur['id'] + '/parameters/'), "html.parser")
                         names = soup.select('.setting-name')
                         name_list = []
@@ -82,7 +86,6 @@ def update(conn):
                         for name in names:
                             name_list.append(name.string)
                         for tag in soup("input"):
-                            logger.info(tag)
                             if tag.has_attr("value"):
                                 value_list.append(tag["value"])
                         parameters = dict(zip(name_list, value_list))
@@ -99,55 +102,9 @@ def update(conn):
 
                         logger.info('test results have been updated')
                         result[curname] = 'Done'
-                else:
+        else:
                         logger.info(curname + ' already up to date')
                         result[curname] = 0
-                        logger.info(result)
-        else:
-                logger.info('some new results were found')
-                names = []
-                res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
-                path = config['PATH'] + curname + '/' + cur['id'] + '/testReport/api/python?pretty=true'
-                obj = eval(urllib.request.urlopen(path).read())
-                for i in obj['suites'][0]['cases']:
-                    name = re.findall(r'\..+\.', i['className'])[0].split('.')[1]
-                    if name not in res.keys():
-                        names.append(name)
-                        res[name] = {'passed':0, 'failed':0, 'skipped':0, 'total':0}
-                    res[name]['total'] += 1
-                    if i['skipped'] == False:
-                        if (i['status'] != 'FAILED') and (i['status'] != 'REGRESSION'):
-                            res[name]['passed'] += 1
-                        else:
-                            res[name]['failed'] += 1
-                    else:
-                        res[name]['skipped'] += 1
-                        
-                soup = BeautifulSoup(urllib.request.urlopen(config['PATH'] + curname + '/' + cur['id'] + '/parameters/'), "html.parser")
-                names = soup.select('.setting-name')
-                name_list = []
-                value_list = []
-                for name in names:
-                    name_list.append(name.string)
-                for tag in soup("input"):
-                    if tag.has_attr("value"):
-                        value_list.append(tag["value"])
-                parameters = dict(zip(name_list, value_list))
-                res["job"]["parameters"] = parameters 
-
-                        
-                        
-                pk = mongoSave(res,curname,conn)
-
-                config['name'][curname]['id'] = int(cur['id'])
-                config['name'][curname]['pk'] = pk
-                
-                
-                with open('config.yaml', 'w') as f:
-                    yaml.dump(config, f, default_flow_style=False)
-
-                logger.info('test results have been updated')
-                result[curname] = 'Done'
     return result 
  
 
@@ -163,6 +120,7 @@ def mongoSave(result, jobname, conn):
     
     
 def update_one(jobname, pk, conn):    
+    config = yaml.load(open('config.yaml'))
     res = conn.testresults[jobname].find_one({"job.pk": int(pk)})
     logger.info(res)
     path = config['PATH'] + jobname + '/' + str(res['job']['id']) + '/testReport/api/python?pretty=true'
@@ -185,5 +143,22 @@ def update_one(jobname, pk, conn):
     result = conn.testresults[jobname].replace_one({"job.pk": int(pk)}, res)
     return result.modified_count
      
+
+def count_res(obj, res):
+    if 'suites' in obj.keys():
+        for i in obj['suites'][0]['cases']:
+            name = re.findall(r'\..+\.', i['className'])[0].split('.')[1]
+            if name not in res.keys():
+                res[name] = {'passed':0, 'failed':0, 'skipped':0, 'total':0}
+            res[name]['total'] += 1
+            if i['skipped'] == False:
+                if (i['status'] != 'FAILED') and (i['status'] != 'REGRESSION'):
+                    res[name]['passed'] += 1
+                else:
+                    res[name]['failed'] += 1
+            else:
+                res[name]['skipped'] += 1
+
+
 if __name__ == '__main__':
     update()

@@ -59,12 +59,7 @@ def present(jobname, pk):
     total = coll.find().count()
     c = coll.find_one({"job.pk" : pk})
 
-'''
-
-calculating data for chart
-
-'''
-    data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}                                         
+    data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}      # data for line-chart                                   
     if 'parameters' in c['job'].keys():
         if 'GITREVISION' in c['job']['parameters'].keys():
             i = 0
@@ -80,10 +75,7 @@ calculating data for chart
                                         else:
                                             data[status][i] += item[test_name][status]
                         i+=1
-                        data['date'].append(item['job']['date'])
-'''
-
-'''
+                        data['date'].append([item['job']['date'], item['job']['pk']])
 
 
     dict_for_sum = coll.find_one({"job.pk" : pk})
@@ -147,6 +139,13 @@ calculating data for chart
                 summed_res[sum_name]['color'] = 'bg-warning'
     return render_template('res.html', chart_data = data, form = form, color_config_form = color_config_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
+@app.route("/stand/<name>/<pk>")
+def stand_present(name, pk):
+    try:
+        pk = int(pk)
+    except:
+        abort(404)
+    return "hello"
 
 @app.route("/jobs/<jobname>/<pk>/update")
 def update(jobname, pk):

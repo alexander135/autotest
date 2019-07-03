@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for jobname in jobnames.keys() %}
-    <a href = "/jobs/{{jobname}}/{{jobnames[jobname]['pk']}}/update"><button >{{jobname}}</button></a>
-    {% endfor %}
+    <div class = index>
+    <div>
+        <h3> Jenkins: </h3>
+    </div>
+    <div>
+        {% for jobname in jobnames.keys() %}
+        <a href = "/jobs/{{jobname}}/{{jobnames[jobname]['pk']}}/update"><button >{{jobname}}</button></a>
+        {% endfor %}
+    </div>
+    <div>
+        <h3> No Jenkins:</h3>
+    </div>
+    </div>
 {% endblock %}
