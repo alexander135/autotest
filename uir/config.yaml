@@ -3,14 +3,13 @@ db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-07-03 10:12:22'
-name:
+jobs:
   fond.unifiedpool.all:
     color:
       bot: 95
       top: 99
-    id: 525
-    pk: 12
+    id: 526
+    pk: 13
     to_sum:
       1:
       - Tests
@@ -21,8 +20,8 @@ name:
     color:
       bot: 95
       top: 99
-    id: 222
-    pk: 5
+    id: 223
+    pk: 6
     to_sum:
       1:
       - Tests
@@ -33,8 +32,8 @@ name:
     color:
       bot: 95
       top: 99
-    id: 703
-    pk: 16
+    id: 704
+    pk: 17
     to_sum:
       1:
       - Tests
@@ -53,11 +52,12 @@ name:
       - SmokeTests
       2:
       - FunctionalTests
+last_update: '2019-07-04 10:42:15'
 stand:
-  id: '0'
-  name: astsplus@fitfond@spt5
-  path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
-  pk: 0
+  astsplus@fitfond@spt5:
+    id: ad83adc
+    path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
+    pk: 1
 user:
   password: Jenpass11-goodpass
   username: Oleshko_Alexander

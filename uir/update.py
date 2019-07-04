@@ -29,7 +29,7 @@ opener = urllib.request.build_opener(handler)
 urllib.request.install_opener(opener)
 
 
-def update(conn):
+def update(conn, flag = False):
     res = {}
     result = {}
     logger.info('updating script started')
@@ -37,10 +37,10 @@ def update(conn):
     config['last_update'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     with open('config.yaml', 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
-    for curname in config['name'].keys():
+    for curname in config['jobs'].keys():
         curpath = config['PATH'] + curname + '/lastCompletedBuild/api/python?pretty=true'
         cur = eval(urllib.request.urlopen(curpath).read())
-        if not conn.testresults[curname].count() or (int(cur['id']) != (config['name'][curname]['id'])):     
+        if not conn.testresults[curname].count() or (int(cur['id']) != (config['jobs'][curname]['id'])):     
                         path = config['PATH'] + curname + '/' + cur['id'] + '/testReport/api/python?pretty=true'
                         res = {"job":{'name': curname,'id':int(cur['id']), 'date': datetime.fromtimestamp(cur['timestamp']/1000).strftime('%Y-%m-%d %H:%M:%S')}}
                         try:
@@ -50,8 +50,8 @@ def update(conn):
                             result[curname] = 'Done'
                             pk = mongoSave(res,curname,conn)
                             
-                            config['name'][curname]['id'] = int(cur['id'])
-                            config['name'][curname]['pk'] = pk
+                            config['jobs'][curname]['id'] = int(cur['id'])
+                            config['jobs'][curname]['pk'] = pk
                         
                         
                             with open('config.yaml', 'w') as f:
@@ -93,8 +93,8 @@ def update(conn):
 
                         pk = mongoSave(res,curname,conn)
 
-                        config['name'][curname]['id'] = int(cur['id'])
-                        config['name'][curname]['pk'] = pk
+                        config['jobs'][curname]['id'] = int(cur['id'])
+                        config['jobs'][curname]['pk'] = pk
                         
                         
                         with open('config.yaml', 'w') as f:
@@ -105,6 +105,21 @@ def update(conn):
         else:
                         logger.info(curname + ' already up to date')
                         result[curname] = 0
+    if flag:
+        for name in config['stand'].keys():
+            res = update_stand(config['stand'][name]['id'])
+            if res:
+                pk = mongoSave(res, name, conn)
+                result[name] = 'Done'
+                config['stand'][name]['id'] = res['job']['Версия кода']
+                config['stand'][name]['pk'] = pk
+                with open('config.yaml', 'w') as f:
+                    yaml.dump(config, f, default_flow_style=False)
+            else:
+                result[name] = 0
+                logger.info(name + "already up to date")
+
+
     return result 
  
 
@@ -159,6 +174,34 @@ def count_res(obj, res):
             else:
                 res[name]['skipped'] += 1
 
+def update_stand(cur_id):
+    a = urllib.request.urlopen("http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list ")
+    soup = BeautifulSoup(a, "html.parser" )
+    data = {'job': {}}
+    info = soup.find_all("div",attrs = {"class" : "data-block"})[1].find_all("div")[0].find_all("div")[2:5]
+    for i in info:
+        res = re.split(': ', i.get_text())
+        data['job'][res[0]] = res[1]
+    if cur_id != data['job']['Версия кода']: 
+        names = []
+        k = 0
+        for name in soup.find_all("h3")[6:14]:
+            names.append(name.string)
+        name_index = 0
+        for table in soup.find_all("table")[1:9]:
+            name = names[name_index]
+            data[name] = {"PASSED" : 0, 'WARNING' : 0, 'FAILED' : 0, "ERROR" : 0}
+            for tr in table.find_all("tr"):
+                i  = tr.find_all("td")[2].find_all("div")[1]
+                i.a.decompose()
+                i.div.decompose()
+                k+= 1
+                status  = re.search("\w+", i.get_text()).group(0)
+                data[name][status] += 1
+            name_index += 1
+    else:
+        return None
+    return(data)
 
 if __name__ == '__main__':
     update()

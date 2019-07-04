@@ -109,7 +109,8 @@
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>
             {% endif %}
-            <form action = "./{{pk}}/update" id = "active-form"><button id = "active-button" > update </button></form>
+            <form action = "./{{pk}}/update" id = "active-form"><button id = "active-button" > update </button>
+            </form>
             {% if total > pk %}
             <a href = "./{{pk+1}}"><button><i class = "fas fa-long-arrow-alt-right"></i></button></a>
             {% endif %}

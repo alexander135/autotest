@@ -40,15 +40,19 @@ scheduler(3600.0, [upd])
 @app.route("/")
 def index():
     config = yaml.load(open('config.yaml'))
-    names = config['name']
-    return render_template('index.html', jobnames = names)
+    jobnames = config['jobs']
+    names = config['stand']
+    return render_template('index.html', jobnames = jobnames, names = names)
 
 
-@app.route("/jobs/<jobname>/<pk>", methods = ['GET', 'POST'])
-def present(jobname, pk):
+@app.route("/<name>/<jobname>/<pk>", methods = ['GET', 'POST'])
+def present(name, jobname, pk):
     config = yaml.load(open('config.yaml'))
-    pk = int(pk)
-    if pk > config['name'][jobname]['pk']:
+    try:
+        pk = int(pk)
+    except:
+        abort(404)
+    if pk > config[name][jobname]['pk']:
         abort (404)
     if request.args.get('mes', None):
         message = request.args.get('mes', None)
@@ -58,6 +62,11 @@ def present(jobname, pk):
     coll = db[jobname]
     total = coll.find().count()
     c = coll.find_one({"job.pk" : pk})
+    form = CommentForm()
+    if 'comment' in c['job'].keys():
+        form.comment.data = c['job']['comment']
+    if name == 'stand':
+        return render_template('stand_res.html', results = c, form = form, message = message)
 
     data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}      # data for line-chart                                   
     if 'parameters' in c['job'].keys():
@@ -79,27 +88,24 @@ def present(jobname, pk):
 
 
     dict_for_sum = coll.find_one({"job.pk" : pk})
-    form = CommentForm()
     color_config_form = ColorConfigForm()
     if color_config_form.validate_on_submit():
-        config['name'][jobname]['color']['bot'] = color_config_form.bot.data
-        config['name'][jobname]['color']['top'] = color_config_form.top.data
+        config[name][jobname]['color']['bot'] = color_config_form.bot.data
+        config[name][jobname]['color']['top'] = color_config_form.top.data
         with open('config.yaml', 'w') as f:
             yaml.dump(config, f, default_flow_style=False)
         return redirect('')
-    color_config_form.bot.data = config['name'][jobname]['color']['bot']
-    color_config_form.top.data = config['name'][jobname]['color']['top']
-    if 'comment' in c['job'].keys():
-        form.comment.data = c['job']['comment']
+    color_config_form.bot.data = config[name][jobname]['color']['bot']
+    color_config_form.top.data = config[name][jobname]['color']['top']
     prev = coll.find_one({"job.pk" : pk-1})
-    last_id = config['name'][jobname]['id']
+    last_id = config[name][jobname]['id']
     script_time = config['last_update']
     for test_name in c:
         if test_name != 'job' and test_name != '_id':
             c[test_name]['succeed'] = round(c[test_name]['passed'] / (c[test_name]['passed'] + c[test_name]['failed']) * 100, 2)
-            if c[test_name]['succeed'] <= config['name'][jobname]['color']['bot']:
+            if c[test_name]['succeed'] <= config[name][jobname]['color']['bot']:
                 c[test_name]['color'] = 'bg-danger'
-            elif c[test_name]['succeed'] >= config['name'][jobname]['color']['top']:
+            elif c[test_name]['succeed'] >= config[name][jobname]['color']['top']:
                 c[test_name]['color'] = 'bg-success'
             else:
                 c[test_name]['color'] = 'bg-warning'
@@ -114,10 +120,10 @@ def present(jobname, pk):
     
     summed_res = {} 
     flag = False
-    for type in config['name'][jobname]['to_sum']:              #create dict with summed tests from config
+    for type in config[name][jobname]['to_sum']:              #create dict with summed tests from config
         sum_name =''
         summed = {}
-        for i in config['name'][jobname]['to_sum'][type]:
+        for i in config[name][jobname]['to_sum'][type]:
             if i in dict_for_sum.keys():
                 if sum_name != '':
                     sum_name += '+'
@@ -131,33 +137,30 @@ def present(jobname, pk):
             summed_res[sum_name] = summed
             summed_res[sum_name]['succeed'] = round(summed_res[sum_name]['passed'] /\
                                                 (summed_res[sum_name]['passed'] + summed_res[sum_name]['failed']) * 100, 2) 
-            if summed_res[sum_name]['succeed'] <= config['name'][jobname]['color']['bot']:
+            if summed_res[sum_name]['succeed'] <= config[name][jobname]['color']['bot']:
                 summed_res[sum_name]['color'] = 'bg-danger'
-            elif summed_res[sum_name]['succeed'] >= config['name'][jobname]['color']['top']:
+            elif summed_res[sum_name]['succeed'] >= config[name][jobname]['color']['top']:
                 summed_res[sum_name]['color'] = 'bg-success'
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
     return render_template('res.html', chart_data = data, form = form, color_config_form = color_config_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
-@app.route("/stand/<name>/<pk>")
-def stand_present(name, pk):
-    try:
-        pk = int(pk)
-    except:
-        abort(404)
-    return "hello"
-
-@app.route("/jobs/<jobname>/<pk>/update")
-def update(jobname, pk):
-    if upd(conn)[jobname]:
+@app.route("/<name>/<jobname>/<pk>/update")
+def update(name, jobname, pk):
+    if upd(conn, name == 'stand')[jobname]:
         config = yaml.load(open('config.yaml'))
-        return redirect(url_for('present',jobname = jobname, pk = config['name'][jobname]['pk'], mes = 'done'))
+        return redirect(url_for('present',name = name, jobname = jobname, pk = config[name][jobname]['pk'], mes = 'done'))
     else:
-        return redirect(url_for('present',jobname = jobname, pk = pk, mes = 'already up to date'))
+        return redirect(url_for('present',name = name, jobname = jobname, pk = pk, mes = 'already up to date'))
 
 
-@app.route("/jobs/<jobname>/<pk>/editComment", methods = ['GET', 'POST'])
-def comment(jobname,pk):
+
+
+
+
+
+@app.route("/<name>/<jobname>/<pk>/editComment", methods = ['GET', 'POST'])
+def comment(name, jobname,pk):
     form = CommentForm()
     logger.info(form.validate_on_submit())
     if form.validate_on_submit():
@@ -170,10 +173,10 @@ def comment(jobname,pk):
 def replace():
     k = 0
     config = yaml.load(open('config.yaml'))
-    for name in config['name']:
-        total = conn.testresults[name].find().count()
+    for nam in config[name]:
+        total = conn.testresults[nam].find().count()
         for i in range(1, total+1):
-            update_one(name,i,conn)
+            update_one(nam,i,conn)
             k+=1
     return str(k);
 

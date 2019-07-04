@@ -12,5 +12,8 @@
     <div>
         <h3> No Jenkins:</h3>
     </div>
+    {% for jobname in names.keys() %}
+    <a href = "/stand/{{ jobname }}/{{ names[jobname]['pk'] }}/update"><button>{{jobname}}</button></a>
+    {% endfor %}
     </div>
 {% endblock %}
