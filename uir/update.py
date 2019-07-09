@@ -18,7 +18,8 @@ logger_conf = yaml.load(open('logger_conf.yaml'))
 logger_dict = logger_conf['logger_config']
 logging.config.dictConfig(logger_dict)
 logger = logging.getLogger('server.updating_script')
-db_logger = logging.getLogger('server.updaring_script.bd')
+db_logger = logging.getLogger('server.updating_script.bd')
+
 
 
 password_mgr = urllib.request.HTTPPasswordMgrWithPriorAuth()
@@ -30,11 +31,15 @@ urllib.request.install_opener(opener)
 
 
 def update(conn, flag = False):
+
+    with open('lock.txt', 'w') as f:
+        f.write('locked')
     res = {}
     result = {}
     logger.info('updating script started')
     config = yaml.load(open('config.yaml'))
     config['last_update'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    logger.info(config['last_update'])
     with open('config.yaml', 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
     for curname in config['jobs'].keys():
@@ -111,7 +116,7 @@ def update(conn, flag = False):
             if res:
                 pk = mongoSave(res, name, conn)
                 result[name] = 'Done'
-                config['stand'][name]['id'] = res['job']['Версия кода']
+                config['stand'][name]['id'] = res['job']['Последний тест на данном стенде']
                 config['stand'][name]['pk'] = pk
                 with open('config.yaml', 'w') as f:
                     yaml.dump(config, f, default_flow_style=False)
@@ -119,7 +124,7 @@ def update(conn, flag = False):
                 result[name] = 0
                 logger.info(name + "already up to date")
 
-
+    os.remove("lock.txt")
     return result 
  
 
@@ -182,7 +187,13 @@ def update_stand(cur_id):
     for i in info:
         res = re.split(': ', i.get_text())
         data['job'][res[0]] = res[1]
-    if cur_id != data['job']['Версия кода']: 
+    data['job']['name'] = soup.find_all("h3")[3].string.split(': ')[1]
+    last_date = soup.find_all("div", attrs = {"class": "data-block"})[1].find_all("div")[0].find_all("div")[5]
+    date = last_date.find("a").get_text()
+    last_date.a.decompose()
+    res_name = last_date.get_text().strip().replace(":", "")
+    data['job'][res_name] = date.strip().split("\n")[0]
+    if cur_id != data['job']['Последний тест на данном стенде']: 
         names = []
         k = 0
         for name in soup.find_all("h3")[6:14]:

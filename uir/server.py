@@ -11,7 +11,7 @@ import logging.config
 import threading, time
 from collections import OrderedDict
 
-from forms import CommentForm, ColorConfigForm
+from forms import CommentForm, OptionsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key'
@@ -63,18 +63,29 @@ def present(name, jobname, pk):
     total = coll.find().count()
     c = coll.find_one({"job.pk" : pk})
     form = CommentForm()
+    options_form = OptionsForm()
     if 'comment' in c['job'].keys():
         form.comment.data = c['job']['comment']
     if name == 'stand':
-        return render_template('stand_res.html', results = c, form = form, message = message)
+        c['total'] = {"PASSED" : 0, 'WARNING' : 0, 'FAILED' : 0, "ERROR" : 0, "total_group": 0}
+        for name in c:
+            if name!= 'job' and name != '_id':
+                c[name]['total_group'] = c[name]['WARNING'] + c[name]['PASSED'] + c[name]['FAILED'] + c[name]['ERROR']
+                if name != 'total':
+                    for status in c[name]:
+                        c['total'][status] += c[name][status]
+
+        return render_template('stand_res.html',pk = pk, total = total, results = c, form = form, message = message)
 
     data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}      # data for line-chart                                   
     if 'parameters' in c['job'].keys():
         if 'GITREVISION' in c['job']['parameters'].keys():
             i = 0
-            for item in db[jobname].find():
+            for item in db[jobname].find().sort('job.pk', pymongo.DESCENDING):
                 if 'parameters' in item['job'].keys():
                     if item['job']['parameters']['GITREVISION'] == c['job']['parameters']['GITREVISION']:
+                        if i >= config[name][jobname]['chart_data_count']:
+                            break
                         for test_name in item:
                             if test_name != '_id' and test_name != 'job':
                                 for status in item[test_name]:
@@ -86,17 +97,46 @@ def present(name, jobname, pk):
                         i+=1
                         data['date'].append([item['job']['date'], item['job']['pk']])
 
+        else:
+            i = 0
+            for item in db[jobname].find().sort('job.pk', pymongo.DESCENDING):
+                if 'parameters' in item['job'].keys():
+                    if i >= config[name][jobname]['chart_data_count']:
+                        break
+                    for test_name in item:
+                        if test_name != '_id' and test_name != 'job':
+                            for status in item[test_name]:
+                                if status != 'total':
+                                    if len(data[status]) == i:
+                                        data[status].append(item[test_name][status])
+                                    else:
+                                        data[status][i] += item[test_name][status]
+                    i+=1
+                    data['date'].append([item['job']['date'], item['job']['pk']])
+
+
+
+    for key in data.keys():
+        data[key].reverse()
 
     dict_for_sum = coll.find_one({"job.pk" : pk})
-    color_config_form = ColorConfigForm()
-    if color_config_form.validate_on_submit():
-        config[name][jobname]['color']['bot'] = color_config_form.bot.data
-        config[name][jobname]['color']['top'] = color_config_form.top.data
+
+
+    if options_form.validate_on_submit():
+        config[name][jobname]['color']['bot'] = options_form.bot.data
+        config[name][jobname]['color']['top'] = options_form.top.data
+        config[name][jobname]['chart_data_count'] = options_form.count.data
         with open('config.yaml', 'w') as f:
             yaml.dump(config, f, default_flow_style=False)
         return redirect('')
-    color_config_form.bot.data = config[name][jobname]['color']['bot']
-    color_config_form.top.data = config[name][jobname]['color']['top']
+
+    options_form.bot.data = config[name][jobname]['color']['bot']
+    options_form.top.data = config[name][jobname]['color']['top']
+    try:
+        options_form.count.data = config[name][jobname]['chart_data_count']
+    except: 
+        options_form.count.data = 20
+
     prev = coll.find_one({"job.pk" : pk-1})
     last_id = config[name][jobname]['id']
     script_time = config['last_update']
@@ -143,16 +183,19 @@ def present(name, jobname, pk):
                 summed_res[sum_name]['color'] = 'bg-success'
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
-    return render_template('res.html', chart_data = data, form = form, color_config_form = color_config_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    path = config['PATH']
+    return render_template('res.html',path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 @app.route("/<name>/<jobname>/<pk>/update")
 def update(name, jobname, pk):
-    if upd(conn, name == 'stand')[jobname]:
-        config = yaml.load(open('config.yaml'))
-        return redirect(url_for('present',name = name, jobname = jobname, pk = config[name][jobname]['pk'], mes = 'done'))
+    if not os.path.exists("lock.txt"):
+        if upd(conn, name == 'stand')[jobname]:
+            config = yaml.load(open('config.yaml'))
+            return redirect(url_for('present',name = name, jobname = jobname, pk = config[name][jobname]['pk'], mes = 'done'))
+        else:
+            return redirect(url_for('present',name = name, jobname = jobname, pk = pk, mes = 'already up to date'))
     else:
         return redirect(url_for('present',name = name, jobname = jobname, pk = pk, mes = 'already up to date'))
-
 
 
 

@@ -6,14 +6,17 @@
     </div>
     <div>
         {% for jobname in jobnames.keys() %}
-        <a href = "/jobs/{{jobname}}/{{jobnames[jobname]['pk']}}/update"><button >{{jobname}}</button></a>
+        <form action= "/jobs/{{jobname}}/{{jobnames[jobname]['pk']}}/update" id = "active-form"><button id = "active-button">{{jobname}}</button></form>
         {% endfor %}
     </div>
     <div>
         <h3> No Jenkins:</h3>
     </div>
     {% for jobname in names.keys() %}
-    <a href = "/stand/{{ jobname }}/{{ names[jobname]['pk'] }}/update"><button>{{jobname}}</button></a>
+    <form action = "/stand/{{ jobname }}/{{ names[jobname]['pk'] }}" id = "active-form"><button id = "active-button">{{jobname}}</button></form>
     {% endfor %}
     </div>
+{% endblock %}
+{% block script %}
+<script src = "{{url_for('static', filename = 'js/edit_form.js')}}"></script>
 {% endblock %}

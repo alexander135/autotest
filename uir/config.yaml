@@ -5,11 +5,12 @@ db:
   port: 27017
 jobs:
   fond.unifiedpool.all:
+    chart_data_count: 10
     color:
       bot: 95
       top: 99
-    id: 526
-    pk: 13
+    id: 529
+    pk: 16
     to_sum:
       1:
       - Tests
@@ -17,11 +18,12 @@ jobs:
       2:
       - FunctionalTests
   fond.unifiedpool.all.long:
+    chart_data_count: 20
     color:
       bot: 95
       top: 99
-    id: 223
-    pk: 6
+    id: 224
+    pk: 7
     to_sum:
       1:
       - Tests
@@ -29,11 +31,12 @@ jobs:
       2:
       - FunctionalTests
   rebus.all:
+    chart_data_count: 20
     color:
       bot: 95
       top: 99
-    id: 704
-    pk: 17
+    id: 707
+    pk: 20
     to_sum:
       1:
       - Tests
@@ -41,23 +44,24 @@ jobs:
       2:
       - FunctionalTests
   rebus.all.long:
+    chart_data_count: 15
     color:
       bot: 95
       top: 99
-    id: 138
-    pk: 3
+    id: 139
+    pk: 4
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-07-04 10:42:15'
+last_update: '2019-07-09 15:05:51'
 stand:
   astsplus@fitfond@spt5:
-    id: ad83adc
+    id: '09.07.2019 17:42:03 / FreezeMainTest / '
     path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
-    pk: 1
+    pk: 2
 user:
   password: Jenpass11-goodpass
   username: Oleshko_Alexander

@@ -4,8 +4,13 @@
 <div class = cont>
     <div class = title>
         <a class = main-but href =/ ><button> Home</button></a>
-        <h1 class = name>Job : {{results['job']['name']}}</h1>
+        <a href = "{{path + results['job']['name']}}/{{results['job']['id']}}"><h1 class = name>Job : {{results['job']['name']}}</h1></a>
     </div>
+    
+
+{% if not results['job']['parameters']%}
+<h2 class = no-res>No test results</h2>
+{% endif %}
 <div class = content>
 <div class =spoiler>
     <span class = blue>Info</span>
@@ -95,15 +100,20 @@
         </div>
         </div>
         <div class = extra>
-<form method = 'POST' class = color_form >
+<div class = opt>
+<button class = optbut> Options </button>
+<form method = 'POST' class = "no-display color_form">
     <label>Color tresholds:</label><br>
-    {{color_config_form.csrf_token}}
-    {{color_config_form.bot.label}}:
-    {{color_config_form.bot()}}<br>
-    {{color_config_form.top.label}}:
-    {{color_config_form.top()}}<br>
-    {{color_config_form.submit()}}
+    {{options_form.csrf_token}}
+    {{options_form.bot.label}}:
+    {{options_form.bot()}}<br>
+    {{options_form.top.label}}:
+    {{options_form.top()}}<br>
+    {{options_form.count.label}}:
+    {{options_form.count()}}<br>
+    {{options_form.submit()}}
 </form> 
+</div>
         <canvas id = 'LineChart' style="display: block; height: 385px; width: 770px;"></canvas>
         <div class = but>
             {% if pk > 1 %}
@@ -129,10 +139,15 @@
 {% if chart_data['date']%}
 <script>
 var chart_data ={{ chart_data|tojson|safe }} 
-var Name = {{ results['job']['parameters']['GITREVISION']|tojson|safe if 'GITREVISION' in results['job']['parameters'].keys()}}
+{% if 'GITREVISION' in results['job']['parameters']%}
+var Name = {{ results['job']['parameters']['GITREVISION']|tojson|safe }}
+{% else %}
+var Name = {{ results['job']['name']|tojson|safe }}
+{% endif %}
 </script>
 {% endif %}
 <script src = "{{url_for('static', filename = 'js/line_chart.js')}}"></script>
 {% endblock %}
+
 
 
