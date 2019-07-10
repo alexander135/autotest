@@ -35,8 +35,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 707
-    pk: 20
+    id: 708
+    pk: 21
     to_sum:
       1:
       - Tests
@@ -56,12 +56,12 @@ jobs:
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-07-09 15:05:51'
+last_update: '2019-07-10 13:55:50'
 stand:
   astsplus@fitfond@spt5:
-    id: '09.07.2019 17:42:03 / FreezeMainTest / '
+    id: '10.07.2019 16:34:50 / NoInjectionTest / '
     path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
-    pk: 2
+    pk: 10
 user:
   password: Jenpass11-goodpass
   username: Oleshko_Alexander
