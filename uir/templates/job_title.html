@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+    <ul class = "navbar-nav">
+        <li class = "nav-item">
+            <a class = nav-link href =/ > Home</a>
+        </li>
+        <li class = "nav-link">
+            <a class ="main-but dropdown-toggle" data-toggle= dropdown aria-haspopup = true aria-expanded = false>
+                Jobs
+            </a>
+            <div class=  dropdown-menu>
+                {% for jobname in jobnames %}
+                {% if jobname == results['job']['name'] %}
+                    {% set class = "dropdown-item active" %}
+                {% else %}
+                    {% set class = "dropdown-item" %}
+                {% endif %}                
+                <a class = "{{class}}" href =/jobs/{{jobname}}>{{jobname}}</a>
+                {% endfor %}
+                <div class="dropdown-divider"></div>
+                {% for jobname in names %}
+                <a class = dropdown-item href =/stand/{{jobname}}>{{jobname}}</a>
+                {% endfor %}
+            </li>
+    </ul>
+
+        <h1 class ="mx-auto"> <a class = navbar-brand href = "{{path + results['job']['name']}}/{{results['job']['id']}}">Job : {{results['job']['name']}} №{{ results['job']['id'] }}</a></h1>
+{% endblock %}

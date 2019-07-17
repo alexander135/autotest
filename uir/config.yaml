@@ -1,4 +1,4 @@
-PATH: http://asts-jenkins.moex.com/job/
+PATH: http://asts-jenkins.moex.com/job
 db:
   db_name: testresults
   host: db
@@ -9,8 +9,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 529
-    pk: 16
+    id: 533
+    pk: 20
     to_sum:
       1:
       - Tests
@@ -22,8 +22,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 224
-    pk: 7
+    id: 226
+    pk: 9
     to_sum:
       1:
       - Tests
@@ -35,8 +35,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 708
-    pk: 21
+    id: 713
+    pk: 26
     to_sum:
       1:
       - Tests
@@ -44,24 +44,24 @@ jobs:
       2:
       - FunctionalTests
   rebus.all.long:
-    chart_data_count: 15
+    chart_data_count: 30
     color:
       bot: 95
       top: 99
-    id: 139
-    pk: 4
+    id: 140
+    pk: 5
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-07-10 13:55:50'
+last_update: '2019-07-17 12:35:34'
 stand:
   astsplus@fitfond@spt5:
-    id: '10.07.2019 16:34:50 / NoInjectionTest / '
+    id: '15.07.2019 04:51:23 / SwitchWBTest / '
     path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
-    pk: 10
+    pk: 16
 user:
   password: Jenpass11-goodpass
   username: Oleshko_Alexander

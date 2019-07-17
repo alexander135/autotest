@@ -2,12 +2,8 @@ from bs4 import BeautifulSoup
 import urllib.request
 import json
 
-mes = urllib.request.urlopen("http://10.50.1.35:8080/ui/standsstatus").read()
-data = json.loads(mes)
-for item in data:
-	if item['stand'] == "astsplus@fitfond@spt5":
-		if item['status']:
-			print('Stand in use')
-		else:
-			print('stand free')
-print(data)
+mes = eval(urllib.request.urlopen("http://asts-jenkins.moex.com/job/rebus.autobus.tests/3935/api/python?pretty=true").read())
+
+params = mes['actions'][0]['parameters'] 
+dir = filter(lambda x: 'TDIR' == x['name'], params)
+print(list(dir)[0]['value'])

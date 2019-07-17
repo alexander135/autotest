@@ -11,7 +11,7 @@ import logging.config
 import threading, time
 from collections import OrderedDict
 
-from forms import CommentForm, OptionsForm
+from forms import CommentForm, OptionsForm, LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key'
@@ -25,7 +25,8 @@ logger.info('server started')
 
 
 conn = pymongo.MongoClient(config['db']['host'], config['db']['port'])
-
+if os.path.exists("lock.txt"):
+    os.remove("lock.txt")
 
 def scheduler(time, updating_scripts):
     t= threading.Timer(time,scheduler,[time, updating_scripts])
@@ -184,7 +185,9 @@ def present(name, jobname, pk):
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
     path = config['PATH']
-    return render_template('res.html',path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    jobnames = config['jobs'].keys()
+    names = config['stand'].keys()
+    return render_template('res.html', names=names, jobnames = jobnames, path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 @app.route("/<name>/<jobname>/<pk>/update")
 def update(name, jobname, pk):
@@ -198,6 +201,10 @@ def update(name, jobname, pk):
         return redirect(url_for('present',name = name, jobname = jobname, pk = pk, mes = 'already up to date'))
 
 
+@app.route("/<name>/<jobname>")
+def red(name, jobname):
+    conifg = yaml.load(open("config.yaml"))
+    return redirect(url_for("present", name = name, jobname = jobname, pk = config[name][jobname]['pk']))
 
 
 
@@ -224,6 +231,15 @@ def replace():
     return str(k);
 
 
+
+@app.route("/login", methods =['GET', 'POST']) 
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+            logger.info("valid")
+            return redirect(url_for("index"))
+    logger.info("not valid")    
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':

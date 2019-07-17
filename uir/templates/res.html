@@ -1,17 +1,36 @@
-{% extends "base.html" %}
+{% extends "job_title.html" %}
 {% block content %}
-
+<title>{{ results['job']['name'] }}</title>
 <div class = cont>
     <div class = title>
-        <a class = main-but href =/ ><button> Home</button></a>
-        <a href = "{{path + results['job']['name']}}/{{results['job']['id']}}"><h1 class = name>Job : {{results['job']['name']}}</h1></a>
+        <div class = btn-group>
+            <a class = main-but href =/ ><button> Home</button></a>
+            <button type = button class ="main-but dropdown-toggle" data-toggle= dropdown aria-haspopup = true aria-expanded = false>
+                Jobs
+            </button>
+            <div class=  dropdown-menu>
+                {% for jobname in jobnames %}
+                {% if jobname == results['job']['name'] %}
+                    {% set class = "dropdown-item active" %}
+                {% else %}
+                    {% set class = "dropdown-item" %}
+                {% endif %}                
+                <a class = "{{class}}" href =/jobs/{{jobname}}>{{jobname}}</a>
+                {% endfor %}
+                <div class="dropdown-divider"></div>
+                {% for jobname in names %}
+                <a class = dropdown-item href =/stand/{{jobname}}>{{jobname}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <h1 class = name> <a href = "{{path + results['job']['name']}}/{{results['job']['id']}}">Job : {{results['job']['name']}} №{{ results['job']['id'] }}</a></h1>
     </div>
     
-
 {% if not results['job']['parameters']%}
 <h2 class = no-res>No test results</h2>
+{% set display = "none" %}
 {% endif %}
-<div class = content>
+<div class = content {% if display %}style ="visibility:hidden"{% endif %} >
 <div class =spoiler>
     <span class = blue>Info</span>
     <input type = checkbox>
@@ -114,7 +133,9 @@
     {{options_form.submit()}}
 </form> 
 </div>
+<div class = "canv">
         <canvas id = 'LineChart' style="display: block; height: 385px; width: 770px;"></canvas>
+        </div>
         <div class = but>
             {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>
@@ -124,11 +145,11 @@
             {% if total > pk %}
             <a href = "./{{pk+1}}"><button><i class = "fas fa-long-arrow-alt-right"></i></button></a>
             {% endif %}
-        </div>
-        </div>
             {% if message %}
             <h2 class = mes> {{message}}</h2>
             {% endif %}
+        </div>
+        </div>
 </div>
 {% endblock %}
 
