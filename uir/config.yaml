@@ -5,12 +5,12 @@ db:
   port: 27017
 jobs:
   fond.unifiedpool.all:
-    chart_data_count: 10
+    chart_data_count: 6
     color:
       bot: 95
       top: 99
-    id: 533
-    pk: 20
+    id: 536
+    pk: 23
     to_sum:
       1:
       - Tests
@@ -22,8 +22,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 226
-    pk: 9
+    id: 228
+    pk: 11
     to_sum:
       1:
       - Tests
@@ -35,8 +35,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 713
-    pk: 26
+    id: 716
+    pk: 29
     to_sum:
       1:
       - Tests
@@ -48,15 +48,15 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 140
-    pk: 5
+    id: 141
+    pk: 6
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-07-17 12:35:34'
+last_update: '2019-07-22 16:38:32'
 stand:
   astsplus@fitfond@spt5:
     id: '15.07.2019 04:51:23 / SwitchWBTest / '

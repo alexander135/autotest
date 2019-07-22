@@ -1,11 +1,7 @@
-{% extends "base.html" %}
+{% extends "job_title.html" %}
 {% block content %}
 
 <div class = cont>
-    <div class = title>
-        <a class = main-but href =/ ><button> Home</button></a>
-        <h1 class = name> Stand: {{results['job']['name']}}</h1>
-    </div>
     <div class = "stand">
         <div class = info>
             {% for key, value in results['job'].items() if key!= 'name' and key != 'comment' %}

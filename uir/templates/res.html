@@ -2,30 +2,7 @@
 {% block content %}
 <title>{{ results['job']['name'] }}</title>
 <div class = cont>
-    <div class = title>
-        <div class = btn-group>
-            <a class = main-but href =/ ><button> Home</button></a>
-            <button type = button class ="main-but dropdown-toggle" data-toggle= dropdown aria-haspopup = true aria-expanded = false>
-                Jobs
-            </button>
-            <div class=  dropdown-menu>
-                {% for jobname in jobnames %}
-                {% if jobname == results['job']['name'] %}
-                    {% set class = "dropdown-item active" %}
-                {% else %}
-                    {% set class = "dropdown-item" %}
-                {% endif %}                
-                <a class = "{{class}}" href =/jobs/{{jobname}}>{{jobname}}</a>
-                {% endfor %}
-                <div class="dropdown-divider"></div>
-                {% for jobname in names %}
-                <a class = dropdown-item href =/stand/{{jobname}}>{{jobname}}</a>
-                {% endfor %}
-            </div>
-        </div>
-        <h1 class = name> <a href = "{{path + results['job']['name']}}/{{results['job']['id']}}">Job : {{results['job']['name']}} №{{ results['job']['id'] }}</a></h1>
-    </div>
-    
+   
 {% if not results['job']['parameters']%}
 <h2 class = no-res>No test results</h2>
 {% set display = "none" %}
@@ -55,6 +32,9 @@
         </div>
 </div>
 <div class = "parameters info">
+        {% for err_name, err in form.errors.items() %}
+            {{err_name}}: {{err}}
+        {% endfor %}
    <span><h2>Parameters:</h2></span>
    {% if 'parameters' in results['job'].keys() %}
         {% for key,value in results['job']['parameters'].items() %}
@@ -123,13 +103,15 @@
 <button class = optbut> Options </button>
 <form method = 'POST' class = "no-display color_form">
     <label>Color tresholds:</label><br>
-    {{options_form.csrf_token}}
-    {{options_form.bot.label}}:
-    {{options_form.bot()}}<br>
-    {{options_form.top.label}}:
-    {{options_form.top()}}<br>
-    {{options_form.count.label}}:
-    {{options_form.count()}}<br>
+    {{ form.hidden_tag() }}
+    {% for field in options_form if field.widget.input_type != 'hidden' and field.widget.input_type != 'submit' %}
+    {{field.label}}:
+    {{field()}}
+        <br>
+        {% for err in field.errors %}
+        <span class = "form_error">{{ err }}</span><br>
+        {% endfor %}
+    {% endfor %}
     {{options_form.submit()}}
 </form> 
 </div>

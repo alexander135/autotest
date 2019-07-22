@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}
+<ul class = "navbar-nav">
+    <li class= nav-item >
+    <a class = "nav-link" href = /> Home</a>
+</ul>
+    <h1 class= "mx-auto navbar-brand"> Change Configs </h1>
+{% endblock %}
+{% block content %}
+<form class = "configForm" method = "POST">
+{{ configForm.hidden_tag()}}
+{{ configForm.config(cols=300, rows = 30) }}
+{{ configForm.submit() }}
+</form>
+{% endblock %}

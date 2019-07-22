@@ -6,8 +6,8 @@ a{
     text-decoration: none;
     color: black;
 }
-a:hover{
-    color:black;
+a>.navbar-brand:hover{
+    text-decoration: underline;
 }
 div{
 }
@@ -189,7 +189,14 @@ label{
 .navbar-brand{
     font-size: 1.7vw;
 }
-
+.login_form{
+    left:auto;
+    right: 0;
+}
+.form_error{
+    color: #dc3545;
+    font-size: 0.7vw;
+}
 @keyframes disappearing{
    80%, 100%{visibility: hidden;}
 }

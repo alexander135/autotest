@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, abort
+from flask import Flask,flash, render_template, redirect, url_for, request, abort
 
 import json
 import yaml
@@ -10,11 +10,15 @@ import logging
 import logging.config
 import threading, time
 from collections import OrderedDict
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
-from forms import CommentForm, OptionsForm, LoginForm
+from forms import ConfigForm, CommentForm, OptionsForm, LoginForm
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'key'
+app.config['SECRET_KEY'] = b'\x1c\x97\x16\x8ar\xd3\xe9U\x1bs\xc8"\x06\x84\x10\xa5'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 config = yaml.load(open('config.yaml'))
 logger_conf = yaml.load(open('logger_conf.yaml'))
@@ -37,6 +41,35 @@ def scheduler(time, updating_scripts):
 scheduler(3600.0, [upd])
 
 
+
+
+class User(object):
+    def __init__(self, username = "", password = ""):
+        self.username = username
+        self.password = password
+
+    def get_id(self):
+        return (self.username)        
+
+    def get(username):
+        if conn.testresults.users.find_one({"name": username}):
+            return User(username, conn.testresults.users.find_one({"name": username})['password'])
+        else:
+            return None
+        
+    def is_active(self):
+        return True
+
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 @app.route("/")
 def index():
@@ -65,18 +98,21 @@ def present(name, jobname, pk):
     c = coll.find_one({"job.pk" : pk})
     form = CommentForm()
     options_form = OptionsForm()
+    jobnames = config['jobs'].keys()
+    names = config['stand'].keys()
+    path = config['PATH']
     if 'comment' in c['job'].keys():
         form.comment.data = c['job']['comment']
     if name == 'stand':
         c['total'] = {"PASSED" : 0, 'WARNING' : 0, 'FAILED' : 0, "ERROR" : 0, "total_group": 0}
-        for name in c:
-            if name!= 'job' and name != '_id':
-                c[name]['total_group'] = c[name]['WARNING'] + c[name]['PASSED'] + c[name]['FAILED'] + c[name]['ERROR']
-                if name != 'total':
-                    for status in c[name]:
-                        c['total'][status] += c[name][status]
+        for testname in c:
+            if testname!= 'job' and testname != '_id':
+                c[testname]['total_group'] = c[testname]['WARNING'] + c[testname]['PASSED'] + c[testname]['FAILED'] + c[testname]['ERROR']
+                if testname != 'total':
+                    for status in c[testname]:
+                        c['total'][status] += c[testname][status]
 
-        return render_template('stand_res.html',pk = pk, total = total, results = c, form = form, message = message)
+        return render_template('stand_res.html',path = path,name = name, jobnames = jobnames, names = names, pk = pk, total = total, results = c, form = form, message = message)
 
     data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}      # data for line-chart                                   
     if 'parameters' in c['job'].keys():
@@ -184,10 +220,7 @@ def present(name, jobname, pk):
                 summed_res[sum_name]['color'] = 'bg-success'
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
-    path = config['PATH']
-    jobnames = config['jobs'].keys()
-    names = config['stand'].keys()
-    return render_template('res.html', names=names, jobnames = jobnames, path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html', names=names,name = name, jobnames = jobnames, path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 @app.route("/<name>/<jobname>/<pk>/update")
 def update(name, jobname, pk):
@@ -211,12 +244,14 @@ def red(name, jobname):
 
 @app.route("/<name>/<jobname>/<pk>/editComment", methods = ['GET', 'POST'])
 def comment(name, jobname,pk):
-    form = CommentForm()
-    logger.info(form.validate_on_submit())
+    form = CommentForm(request.form)
+    if not form.validate():
+        response = {"status" : False, "errors": form.errors}
+        return json.dumps(response)
     if form.validate_on_submit():
         db = conn.testresults
         db[jobname].update_one({"job.pk": int(pk)}, {"$set": {'job.comment' : form.comment.data}}, upsert = False)
-        return form.comment.data
+        return json.dumps({"comment":form.comment.data, "status":True})
     return form.comment.data
 
 @app.route("/test")
@@ -231,15 +266,43 @@ def replace():
     return str(k);
 
 
-
 @app.route("/login", methods =['GET', 'POST']) 
 def login():
-    form = LoginForm()
+    form = LoginForm(request.form)
+    if request.method == "POST" and not form.validate():
+            return json.dumps({"status":False, "errors": form.errors})
     if form.validate_on_submit():
-            logger.info("valid")
-            return redirect(url_for("index"))
-    logger.info("not valid")    
+            if User.get(form.login.data):
+                curUser = User.get(form.login.data)
+                if form.password.data == curUser.password:
+                    login_user(curUser)
+                    return json.dumps({'status': True})
+                form.password.errors.append('wrong password')
+            else:
+                form.login.errors.append('wrong name')
+            return json.dumps({"status":False, "errors": form.errors})
+    return render_template("login.html", login_form = form)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
     return redirect(url_for("index"))
+
+@app.route("/changeConf", methods = ["GET", "POST"])
+@login_required
+def changeConf():
+    form = ConfigForm(request.form)
+    config = yaml.load(open('test_config.yaml'))
+    if form.validate_on_submit():
+        config = form.config.data
+        with open('test_config.yaml', 'w') as f:
+            f.write(config)
+        return redirect(url_for("index"))
+    with open("test_config.yaml", "r") as f:
+        data = ''.join(f.readlines())
+    form.config.data = data
+    return render_template("changeConf.html", configForm = form, config = config)
 
 
 if __name__ == '__main__':

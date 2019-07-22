@@ -23,6 +23,9 @@
                 {% endfor %}
             </li>
     </ul>
-
-        <h1 class ="mx-auto"> <a class = navbar-brand href = "{{path + results['job']['name']}}/{{results['job']['id']}}">Job : {{results['job']['name']}} №{{ results['job']['id'] }}</a></h1>
+    {% if name == 'jobs' %}
+    <a class = "mx-auto " href = "{{'/'.join([path,results['job']['name'], results['job']['id']|string()]) }}"><h1 class = "navbar-brand"> Job : {{results['job']['name']}} №{{ results['job']['id'] }}</h1></a>
+    {% else %}
+    <h1 class = "mx-auto navbar-brand"> Stand : {{results['job']['name']}}</h1>
+    {% endif %}
 {% endblock %}

@@ -1,22 +1,14 @@
-{% extends "base.html" %}
-{% block content %}
-<title> login</title>
-<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Sign in
-</button>
-<div class = dropdown-menu>
-<form method = 'POST' class = "login_form px-4 py-3" >
+<form method = 'POST' id = "login_form" class = "px-4 py-3" >
     <div class = "form-group">
     <label> Sign in</label>
-    {{ form.csrf_token }}<br>
-    {{ form.login.label }}:<br>
-    {{ form.login() }}<br>
-    {{ form.password.label }}:<br>
-    {{ form.password() }}<br>
-    {{ form.submit }}<br>
-    {% for error in form.errors %}
-    <span> {{error}} </span>
+    {{ login_form.csrf_token }}<br>
+    {{ login_form.login.label }}:<br>
+    {{ login_form.login() }}<br>
+    {{ login_form.password.label }}:<br>
+    {{ login_form.password() }}<br>
+    {{ login_form.submit }}<br>
+    {% for field, err in login_form.errors.items() %}
+    <span> {{field}} : {{err}} </span>
     {% endfor %}
     </div>
-</div>
-{% endblock %}
+</form>

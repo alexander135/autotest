@@ -1,0 +1,67 @@
+PATH: http://asts-jenkins.moex.com/job
+db:
+  db_name: testresults
+  host: db
+  port: 27017
+jobs:
+  fond.unifiedpool.all:
+    chart_data_count: 6
+    color:
+      bot: 95
+      top: 99
+    id: 536
+    pk: 23
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
+  fond.unifiedpool.all.long:
+    chart_data_count: 20
+    color:
+      bot: 95
+      top: 99
+    id: 228
+    pk: 11
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
+  rebus.all:
+    chart_data_count: 20
+    color:
+      bot: 95
+      top: 99
+    id: 716
+    pk: 29
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
+  rebus.all.long:
+    chart_data_count: 30
+    color:
+      bot: 95
+      top: 99
+    id: 141
+    pk: 6
+    to_sum:
+      1:
+      - Tests
+      - SmokeTests
+      2:
+      - FunctionalTests
+last_update: '2019-07-22 14:37:49'
+stand:
+  astsplus@fitfond@spt5:
+    id: '15.07.2019 04:51:23 / SwitchWBTest / '
+    path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
+    pk: 16
+user:
+  password: Jenpass11-goodpass
+  username: Oleshko_Alexander

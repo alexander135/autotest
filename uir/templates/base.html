@@ -7,9 +7,32 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/Chart.min.css') }}">
     </head>
     <body>
-    <nav class = "navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class = "navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
         {% block title %}
         {% endblock %}
+        <ul class = "navbar-nav">
+            {% if not current_user.is_authenticated %}
+            <li class = "nav-item dropdown">
+            <a class = "nav-link dropdown-toggle" id = "login_but" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Login </a>
+            <div class ="dropdown-menu login_form" id = "login_div">
+                {% else %}
+                <li class = "nav-item">
+                    <a class = "nav-link" href = /changeConf>
+                    Change configs
+                    </a>
+                </li>
+                <li class = nav-item>
+                <a class = "nav-link disabled">
+                    {{ current_user.username }}
+                    </a>
+                    </span>
+                    </li>
+                <li class = nav-item>
+                    <a class = "nav-link" href = "/logout"> logout </a>
+                    </li>
+                {% endif %}
+            </div>
+            </li>
     </nav>    
         <div>
             {% block content %}{% endblock %}
@@ -19,6 +42,7 @@
     <script src = "{{url_for('static', filename = 'js/popper.min.js')}}"></script>
     <script src = "{{url_for('static', filename = 'js/bootstrap.min.js')}}"></script>
     <script src = "{{url_for('static', filename = 'js/Chart.min.js')}}"></script>
+    <script src = "{{url_for('static', filename = 'js/login.js')}}"></script>
     {% block script %}
     {% endblock %}
     </body>
