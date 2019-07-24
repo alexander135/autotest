@@ -53,7 +53,7 @@ var LineChart = new Chart(ctx, {
                 function(evt, item){
                     try{
                         console.log(evt,item[0]['_index'], item);
-                    pk = item[0]['_chart']['config']['data']['labels'][item[0]['_index']][1];
+                    pk = item[0]['_chart']['config']['data']['labels'][item[0]['_index']][2];
                     if (pk >= 0){
                         location.href = pk
                             }
@@ -72,6 +72,13 @@ var LineChart = new Chart(ctx, {
             scales:{
                 yAxes:[{
                     stacked:true,
+                }],
+                xAxes:[{
+                    ticks:{
+                        callback: function(value, index, values){
+                            return value.slice(0,2);
+                        }
+                    }
                 }]
             }
         }

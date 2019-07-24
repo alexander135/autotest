@@ -9,8 +9,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 536
-    pk: 23
+    id: 537
+    pk: 24
     to_sum:
       1:
       - Tests
@@ -35,8 +35,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 716
-    pk: 29
+    id: 718
+    pk: 31
     to_sum:
       1:
       - Tests
@@ -56,12 +56,13 @@ jobs:
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-07-22 16:38:32'
+last_update: '2019-07-24 11:23:00'
 stand:
   astsplus@fitfond@spt5:
     id: '15.07.2019 04:51:23 / SwitchWBTest / '
     path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
     pk: 16
+stand_PATH: http://10.50.1.35:8080/ui
 user:
   password: Jenpass11-goodpass
   username: Oleshko_Alexander

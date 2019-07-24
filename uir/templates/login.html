@@ -7,8 +7,5 @@
     {{ login_form.password.label }}:<br>
     {{ login_form.password() }}<br>
     {{ login_form.submit }}<br>
-    {% for field, err in login_form.errors.items() %}
-    <span> {{field}} : {{err}} </span>
-    {% endfor %}
     </div>
 </form>

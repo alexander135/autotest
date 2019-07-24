@@ -101,7 +101,7 @@
         <div class = extra>
 <div class = opt>
 <button class = optbut> Options </button>
-<form method = 'POST' class = "no-display color_form">
+<form method = 'POST' class = "color_form">
     <label>Color tresholds:</label><br>
     {{ form.hidden_tag() }}
     {% for field in options_form if field.widget.input_type != 'hidden' and field.widget.input_type != 'submit' %}

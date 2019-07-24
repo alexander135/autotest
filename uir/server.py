@@ -116,40 +116,23 @@ def present(name, jobname, pk):
 
     data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}      # data for line-chart                                   
     if 'parameters' in c['job'].keys():
-        if 'GITREVISION' in c['job']['parameters'].keys():
-            i = 0
-            for item in db[jobname].find().sort('job.pk', pymongo.DESCENDING):
-                if 'parameters' in item['job'].keys():
-                    if item['job']['parameters']['GITREVISION'] == c['job']['parameters']['GITREVISION']:
-                        if i >= config[name][jobname]['chart_data_count']:
-                            break
-                        for test_name in item:
-                            if test_name != '_id' and test_name != 'job':
-                                for status in item[test_name]:
-                                    if status != 'total':
-                                        if len(data[status]) == i:
-                                            data[status].append(item[test_name][status])
-                                        else:
-                                            data[status][i] += item[test_name][status]
-                        i+=1
-                        data['date'].append([item['job']['date'], item['job']['pk']])
-
-        else:
-            i = 0
-            for item in db[jobname].find().sort('job.pk', pymongo.DESCENDING):
-                if 'parameters' in item['job'].keys():
-                    if i >= config[name][jobname]['chart_data_count']:
+        cur_data_count = 0
+        for item in db[jobname].find().sort('job.pk', pymongo.DESCENDING):
+            if 'parameters' in item['job'].keys():
+                if 'GITREVISION' not in c['job']['parameters'].keys() or item['job']['parameters']['GITREVISION'] == c['job']['parameters']['GITREVISION']:
+                    if cur_data_count >= config[name][jobname]['chart_data_count']:
                         break
                     for test_name in item:
                         if test_name != '_id' and test_name != 'job':
                             for status in item[test_name]:
                                 if status != 'total':
-                                    if len(data[status]) == i:
+                                    if len(data[status]) == cur_data_count:
                                         data[status].append(item[test_name][status])
                                     else:
-                                        data[status][i] += item[test_name][status]
-                    i+=1
-                    data['date'].append([item['job']['date'], item['job']['pk']])
+                                        data[status][cur_data_count] += item[test_name][status]
+                    cur_data_count+=1
+                    data['date'].append([item['job']['date'], item['job']['id'], item['job']['pk']])
+
 
 
 
@@ -220,7 +203,7 @@ def present(name, jobname, pk):
                 summed_res[sum_name]['color'] = 'bg-success'
             else:
                 summed_res[sum_name]['color'] = 'bg-warning'
-    return render_template('res.html', names=names,name = name, jobnames = jobnames, path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(sorted(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
+    return render_template('res.html', names=names,name = name, jobnames = jobnames, path = path, chart_data = data, form = form, options_form = options_form, last_update = script_time, results = OrderedDict(mysort(c.items())), pk = pk, last_id = last_id, total = total, message = message, summed_res = summed_res)
 
 @app.route("/<name>/<jobname>/<pk>/update")
 def update(name, jobname, pk):
@@ -296,14 +279,32 @@ def changeConf():
     config = yaml.load(open('test_config.yaml'))
     if form.validate_on_submit():
         config = form.config.data
-        with open('test_config.yaml', 'w') as f:
+        with open('config.yaml', 'w') as f:
             f.write(config)
         return redirect(url_for("index"))
-    with open("test_config.yaml", "r") as f:
+    with open("config.yaml", "r") as f:
         data = ''.join(f.readlines())
     form.config.data = data
     return render_template("changeConf.html", configForm = form, config = config)
 
+
+def mysort(mas):
+    types = ["Tests","FunctionalTests" ,"SpecialTests", "SmokeTests"]
+    for item in mas:
+        if item[0] == "Tests":
+            yield item
+    for item in mas:
+        if item[0] == "SmokeTests":
+            yield item
+    for item in mas:
+        if item[0] == "FunctionalTests":
+            yield item
+    for item in mas:
+        if item[0] == "SpecialTests":
+            yield item
+    for item in mas:
+        if item[0] not in types:
+            yield item
 
 if __name__ == '__main__':
     app.run(host = 'web', port = '80', debug = True, use_reloader = False)

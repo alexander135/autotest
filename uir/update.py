@@ -187,13 +187,11 @@ def count_res(obj, res):
             else:
                 res[name]['skipped'] += 1
 
-def count_subjob_res(obj,res, TDIR):
-    pass
-
 
 
 def update_stand(cur_id):
-    a = urllib.request.urlopen("http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list ")
+    config = yaml.load(open('config.yaml'))
+    a = urllib.request.urlopen('/'.join([config["stand_PATH"], "generic/stand?testuser=astsplus@fitfond@spt5&mode=list "]))
     soup = BeautifulSoup(a, "html.parser" )
     data = {'job': {}}
     info = soup.find_all("div",attrs = {"class" : "data-block"})[1].find_all("div")[0].find_all("div")[2:5]
@@ -201,7 +199,7 @@ def update_stand(cur_id):
         res = re.split(': ', i.get_text())
         data['job'][res[0]] = res[1]
     data['job']['name'] = soup.find_all("h3")[3].string.split(': ')[1]
-    mes = json.loads(urllib.request.urlopen("http://10.50.1.35:8080/ui/standsstatus").read())
+    mes = json.loads(urllib.request.urlopen('/'.join([config['stand_PATH'], "standsstatus"])).read())
     for item in mes:
         if item['stand'] == "astsplus@fitfond@spt5":
             if item['status']:

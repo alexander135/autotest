@@ -1,6 +1,6 @@
-function display_form_errors(errors, $form) {
+function display_login_form_errors(errors, $form) {
             for (var k in errors) {
-                            $("body").find('#password').after('<div class="form_error" id = "form_error">' + errors[k] + '</div>');
+                $("body").find('#'+ k).after('<span class="form_error" id = "form_error">' + errors[k] + '</span>');
 }
 };
 
@@ -20,7 +20,7 @@ $(document).ready(function(){
                     window.location = "/";
                 }
                 else{
-                 display_form_errors(data['errors'], $("#login_form"))
+                 display_login_form_errors(data['errors'], $("#login_form"));
                 }
             }
         })
