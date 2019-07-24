@@ -13,6 +13,7 @@ services:
       - db
   db: 
     image: mongo:4.1
+    command: [--auth]
     networks:
       - net
 networks:
