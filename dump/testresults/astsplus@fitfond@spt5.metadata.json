@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"testresults.astsplus@fitfond@spt5"}],"uuid":"2e038d568326495f91d6d2afd280c9e8"}
