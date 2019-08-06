@@ -219,7 +219,7 @@ def update(name, jobname, pk):
 
 @app.route("/<name>/<jobname>")
 def red(name, jobname):
-    conifg = yaml.load(open("config.yaml"))
+    config = yaml.load(open("config.yaml"))
     return redirect(url_for("present", name = name, jobname = jobname, pk = config[name][jobname]['pk']))
 
 

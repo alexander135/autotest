@@ -10,7 +10,7 @@ jobs:
       bot: 95
       top: 99
     id: 547
-    pk: 1
+    pk: 25
     to_sum:
       1:
       - Tests
@@ -23,7 +23,7 @@ jobs:
       bot: 95
       top: 99
     id: 232
-    pk: 1
+    pk: 12
     to_sum:
       1:
       - Tests
@@ -35,8 +35,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 727
-    pk: 1
+    id: 728
+    pk: 32
     to_sum:
       1:
       - Tests
@@ -49,14 +49,14 @@ jobs:
       bot: 95
       top: 99
     id: 144
-    pk: 1
+    pk: 7
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-08-05 15:45:59'
+last_update: '2019-08-06 13:50:17'
 stand:
   astsplus@fitfond@spt5:
     id: '15.07.2019 04:51:23 / SwitchWBTest / '

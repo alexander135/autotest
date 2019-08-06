@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"testresults.fond.unifiedpool.all"}],"uuid":"da8dcf8322304320af0849bb7e8ce1f9"}
