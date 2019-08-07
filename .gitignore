@@ -5,4 +5,4 @@ dump/
 *.swp
 __pycache__/
 *.swo
-.env/
+.env
