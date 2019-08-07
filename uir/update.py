@@ -24,7 +24,7 @@ db_logger = logging.getLogger('server.updating_script.bd')
 
 password_mgr = urllib.request.HTTPPasswordMgrWithPriorAuth()
 top_level_url = "http://asts-jenkins.moex.com/"
-password_mgr.add_password(None, top_level_url, config['user']['username'], config['user']['password'], is_authenticated = True)
+password_mgr.add_password(None, top_level_url, os.environ['jen_login'], os.environ['jen_pass'], is_authenticated = True)
 handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
 opener = urllib.request.build_opener(handler)
 urllib.request.install_opener(opener)

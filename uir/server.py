@@ -28,7 +28,7 @@ logger = logging.getLogger('server')
 logger.info('server started')
 
 
-conn = pymongo.MongoClient(config['db']['host'], config['db']['port'])
+conn = pymongo.MongoClient(username = os.environ['mongo_login'], password = os.environ['mongo_password'], host = config['db']['host'], port = config['db']['port'])
 if os.path.exists("lock.txt"):
     os.remove("lock.txt")
 
