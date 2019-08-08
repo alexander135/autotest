@@ -5,12 +5,12 @@ db:
   port: 27017
 jobs:
   fond.unifiedpool.all:
-    chart_data_count: 6
+    chart_data_count: 10
     color:
       bot: 95
-      top: 99
-    id: 537
-    pk: 24
+      top: 90
+    id: 549
+    pk: 36
     to_sum:
       1:
       - Tests
@@ -22,8 +22,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 228
-    pk: 11
+    id: 233
+    pk: 16
     to_sum:
       1:
       - Tests
@@ -31,12 +31,12 @@ jobs:
       2:
       - FunctionalTests
   rebus.all:
-    chart_data_count: 20
+    chart_data_count: 10
     color:
       bot: 95
       top: 99
-    id: 718
-    pk: 31
+    id: 730
+    pk: 43
     to_sum:
       1:
       - Tests
@@ -48,20 +48,20 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 141
-    pk: 6
+    id: 144
+    pk: 9
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-07-24 11:23:00'
+last_update: '2019-08-08 14:43:10'
 stand:
   astsplus@fitfond@spt5:
-    id: '15.07.2019 04:51:23 / SwitchWBTest / '
+    id: '08.08.2019 05:59:36 / FailedSyncBackupTest / '
     path: http://10.50.1.35:8080/ui/generic/stand?testuser=astsplus@fitfond@spt5&mode=list
-    pk: 16
+    pk: 19
 stand_PATH: http://10.50.1.35:8080/ui
 user:
   password: Jenpass11-goodpass
