@@ -244,6 +244,7 @@ def update(name, jobname, pk):
 
 @app.route("/<name>/<jobname>")
 def red(name, jobname):
+
     config = yaml.full_load(open("config.yaml"))
     return redirect(url_for("present", name = name, jobname = jobname, pk = config[name][jobname]['pk']))
 
@@ -340,5 +341,5 @@ def get_conf():
 
 
 if __name__ == '__main__':
-    app.run(host = 'web', port = '8080', debug = True, use_reloader = False)
+    app.run(host = 'web', port = '80', debug = True, use_reloader = False)
 

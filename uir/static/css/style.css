@@ -18,7 +18,8 @@ table{
     border-collapse: collapse;
     border:1px solid black;
     min-width:300px;
-    font-size: 1.2vw;
+    font-size: 1vw;
+    font-weight: 499;
 }
 
 tr,td{
@@ -66,10 +67,10 @@ h1{
 i{
 }
 span{
-    font-size: 1.2vw;
+    font-size: 1vw;
 }
 h2{
-    font-size: 1.5vw;
+    font-size: 1.2vw;
     margin-top: 0px;
 }
 h3{
@@ -90,6 +91,7 @@ h3{
     background: wheat;
     border-radius: 10px;
     margin: 1vw;
+    margin-bottom: 0;
 }
 .cont{
     display:grid;
@@ -123,6 +125,12 @@ input[type = 'checkbox'] {
 }
 input{
     font-size:0.8vw;
+}
+.bg-danger{
+    background-color: rgba(220, 53, 69,0.5)
+}
+.bg-success{
+    background-color: rgba(40, 167, 69,0.5)
 }
 .blue{
     padding-left:1vw;
@@ -213,7 +221,10 @@ label{
     grid-template-columns: 1fr 1fr;
 }
 .navbar-brand{
-    font-size: 1.7vw;
+    font-size: 1.5vw;
+}
+.navbar{
+    padding:0.1vw;
 }
 .login_form{
     left:auto;
