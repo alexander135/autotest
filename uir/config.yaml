@@ -9,8 +9,8 @@ jobs:
     color:
       bot: 95
       top: 90
-    id: 549
-    pk: 36
+    id: 553
+    pk: 40
     to_sum:
       1:
       - Tests
@@ -22,8 +22,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 233
-    pk: 16
+    id: 234
+    pk: 17
     to_sum:
       1:
       - Tests
@@ -35,8 +35,8 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 730
-    pk: 43
+    id: 735
+    pk: 48
     to_sum:
       1:
       - Tests
@@ -48,15 +48,15 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 144
-    pk: 9
+    id: 145
+    pk: 10
     to_sum:
       1:
       - Tests
       - SmokeTests
       2:
       - FunctionalTests
-last_update: '2019-08-08 14:43:10'
+last_update: '2019-08-13 13:33:51'
 stand:
   astsplus@fitfond@spt5:
     id: '08.08.2019 05:59:36 / FailedSyncBackupTest / '

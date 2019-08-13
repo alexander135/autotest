@@ -85,6 +85,7 @@ h3{
     background: wheat;
     border-radius: 10px;
     margin: 1vw;
+    margin-bottom: 0;
 }
 .cont{
     display:grid;
