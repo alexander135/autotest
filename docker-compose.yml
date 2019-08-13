@@ -6,14 +6,32 @@ services:
     networks:
       - net
     ports: 
-      - "80:80"
+      - "8080:8080"
     volumes:
       - .:/code
     depends_on: 
-      - db
+      - restore_db
+    env_file:
+      - .env
+    depends_on:
+      - restore_db
   db: 
     image: mongo:4.1
     networks:
       - net
+    volumes:
+      - /dump:/dump
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${mongo_login}"
+      MONGO_INITDB_ROOT_PASSWORD: "${mongo_password}"
+  restore_db:
+    image: mongo:4.1
+    volumes: 
+      - ~/monitoring_server/dev/dump:/dump
+    entrypoint: ["mongorestore", "--host", "db","-u", "${mongo_login}", "-p", "${mongo_password}", "--authenticationDatabase", "admin", "/dump"]
+    networks:
+      - net
 networks:
   net:
+    external: 
+      name: beauti-test_net

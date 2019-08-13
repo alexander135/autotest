@@ -9,23 +9,35 @@
                 Jobs
             </a>
             <div class=  dropdown-menu>
-                {% for jobname in jobnames %}
-                {% if jobname == results['job']['name'] %}
-                    {% set class = "dropdown-item active" %}
-                {% else %}
-                    {% set class = "dropdown-item" %}
-                {% endif %}                
-                <a class = "{{class}}" href =/jobs/{{jobname}}>{{jobname}}</a>
+
+
+                {% for type in get_config() %}
+                {% if type != "PATH" and type != "db" and type != "last_update"%}
+                <h6 class = "dropdown-header"> {{ type }}</h6>
+                    {% for name in get_config()[type] %}
+                    {% if name == results['job']['name'] %}
+                        {% set class = "dropdown-item active"%}
+                    {% else %}
+                        {% set class = "dropdown-item"%}
+                    {% endif %}
+                    <a class = "{{ class }}" href = "/{{type}}/{{name}}"> {{ name }}</a>
+                    {% endfor %}
+                    <div class = "dropdown-divider"></div>
+                {% endif%}
                 {% endfor %}
-                <div class="dropdown-divider"></div>
-                {% for jobname in names %}
-                <a class = dropdown-item href =/stand/{{jobname}}>{{jobname}}</a>
-                {% endfor %}
+                </div>
             </li>
     </ul>
     {% if name == 'jobs' %}
     <a class = "mx-auto " href = "{{'/'.join([path,results['job']['name'], results['job']['id']|string()]) }}"><h1 class = "navbar-brand"> Job : {{results['job']['name']}} №{{ results['job']['id'] }}</h1></a>
-    {% else %}
+    {% endif %}
+    {% if name == 'stand' or name == "FI_curr_RHEL6"%}
     <h1 class = "mx-auto navbar-brand"> Stand : {{results['job']['name']}}</h1>
     {% endif %}
+    {% if name == 'LCOV'%}
+    <h1 class = "mx-auto navbar-brand"> {{results['job']['Test']}}</h1>
+        
+    {% endif %}
 {% endblock %}
+
+
