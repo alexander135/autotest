@@ -30,7 +30,7 @@ jobs:
     color:
       bot: 95
       top: 99
-    id: 735
+    id: 734
     pk: 32
     to_sum:
       1:
@@ -65,7 +65,7 @@ db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-08-13 13:24:28'
+last_update: '2019-08-13 09:45:05'
 stand:
   astsplus@fitfond@spt5:
     id: '15.07.2019 04:51:23 / SwitchWBTest / '

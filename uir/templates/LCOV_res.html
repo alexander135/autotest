@@ -1,0 +1,72 @@
+{% extends "job_title.html" %}
+{% block content %}
+
+<div class = cont>
+    <div class = "stand">
+        <div class = info>
+            {% for key, value in results['job'].items() if key!= 'name' and key != 'comment' %}
+            <span>
+                {{key}}: {{value}}
+            </span>
+            <br>
+            {% endfor %}
+            <span>Comment: <span id = 'comment'>{% if results['job']['comment'] %} {{ results['job']['comment'] }} {% endif %}</span>
+            <form id = 'comment-form' method = 'POST' data = {{results['job']['pk']}} style = "display: none" >
+            {{ form.csrf_token }}
+            {{ form.comment() }}
+            {{ form.submit() }}
+            </form>
+            <i class = "far fa-edit" id = 'edit_form'></i>
+            </span>
+        </div>
+
+    <div class = "tables">
+        <table class = "stand-table table-striped table-hover">
+            <caption> Test results </caption>
+            <tr class = "bg-secondary text-light">
+                <td>        </td>
+                <td> Hit </td>
+                <td> Total </td>
+                <td> Coverage </td>
+            </tr>
+            {% for name in results %}
+                {% if name != 'job' and name!= '_id' %}
+                <td> {{name}} </td>
+                    {% for i in results[name] %}
+                    <td>{{ i }}</td>
+                    {% endfor %}
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </table>
+</div>
+<div class = 'lcov_canv'>
+        <canvas id = 'LineChart' style="display: block; height: 385px; width: 770px;"></canvas>
+</div>
+<div class ="but stand-but">
+        {% if pk > 1 %}
+            <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>
+            {% endif %}
+            <form action = "./{{pk}}/update" id = "active-form"><button id = "active-button" > update </button>
+            </form>
+            {% if total > pk %}
+            <a href = "./{{pk+1}}"><button><i class = "fas fa-long-arrow-alt-right"></i></button></a>
+            {% endif %}
+        </div>
+            {% if message %}
+            <h2 class = mes> {{message}}</h2>
+            {% endif %}
+{% endblock %}
+
+{% block script %}
+
+
+<script src = "{{url_for('static', filename = 'js/edit_form.js')}}"></script>
+<script>
+var lcovChartData = {{data|tojson|safe}};
+var Name = "Coverage";
+</script>
+<script src = '{{url_for('static', filename = 'js/form_submit.js')}}'></script>
+<script src = '{{url_for('static', filename = 'js/Lcov_chart.js')}}'></script>
+{% endblock %}
+

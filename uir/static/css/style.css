@@ -2,6 +2,9 @@ body{
     width:100%;
     margin: 0;
 }
+.default-font{
+    font-size:1.2vw;
+}
 a{
     text-decoration: none;
     color: black;
@@ -22,6 +25,9 @@ tr,td{
     border:1px solid black
 }
 
+ul{
+    list-style-type: none;
+}
 button{
     border: none;
     font-size:0.8vw;
@@ -92,6 +98,9 @@ h3{
 .name{
     justify-self:center;
 }
+.lcov_canv{
+    grid-column:1/3;
+}
 .content{
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -131,6 +140,23 @@ input{
 .tables{
     display:grid;
     margin-right: 0.5vw;
+}
+.fi-info{
+    display: grid;
+    grid-template-rows : 1fr min-content;
+}
+.fi-data{
+    display: grid;
+    margin: 1vw;
+}
+.fi-res{
+    display:grid;
+    grid-template-rows: min-content min-content;
+}
+.fi-table{
+    display: grid;
+    margin: 1vw;
+
 }
 .parameters{
     align-self: stretch;

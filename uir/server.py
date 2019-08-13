@@ -16,12 +16,11 @@ from forms import ConfigForm, CommentForm, OptionsForm, LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = b'\x1c\x97\x16\x8ar\xd3\xe9U\x1bs\xc8"\x06\x84\x10\xa5'
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-config = yaml.load(open('config.yaml'))
-logger_conf = yaml.load(open('logger_conf.yaml'))
+config = yaml.full_load(open('config.yaml'))
+logger_conf = yaml.full_load(open('logger_conf.yaml'))
 logger_dict = logger_conf['logger_config']
 logging.config.dictConfig(logger_dict)
 logger = logging.getLogger('server')
@@ -73,10 +72,11 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    config = yaml.load(open('config.yaml'))
+    config = yaml.full_load(open('config.yaml'))
     jobnames = config['jobs']
     names = config['stand']
-    return render_template('index.html', jobnames = jobnames, names = names)
+    lcov = config['LCOV']
+    return render_template('index.html', jobnames = jobnames, names = names, lcov = lcov)
 
 
 @app.route("/<name>/<jobname>/<pk>", methods = ['GET', 'POST'])
@@ -100,6 +100,7 @@ def present(name, jobname, pk):
     options_form = OptionsForm()
     jobnames = config['jobs'].keys()
     names = config['stand'].keys()
+    lcov = config['LCOV'].keys()
     path = config['PATH']
     if 'comment' in c['job'].keys():
         form.comment.data = c['job']['comment']
@@ -113,6 +114,30 @@ def present(name, jobname, pk):
                         c['total'][status] += c[testname][status]
 
         return render_template('stand_res.html',path = path,name = name, jobnames = jobnames, names = names, pk = pk, total = total, results = c, form = form, message = message)
+
+    if name == 'LCOV':
+        
+        cur_data_count = 0
+        data_count = 20
+        data = {'Lines': [], 'Functions': [], "Date" : []}
+        for item in db[jobname].find().sort('job.pk', pymongo.DESCENDING):
+            if cur_data_count <= data_count:
+                cur_data_count += 1
+                data['Lines'].append(float(item['Lines'][2].strip('%')))
+                data['Functions'].append(float(item['Functions'][2].strip('%')))
+                key = [item['job']['Date'], item['job']['pk']]
+                data['Date'].append(key)
+            else:
+                break
+        for key in data.keys():
+            data[key].reverse()
+
+        return render_template('LCOV_res.html',path = config[name][jobname],data = data,name = name, jobnames = jobnames, names = names, pk = pk, total = total, results = c, form = form, message = message)
+
+
+    if name == 'FI_curr_RHEL6':
+
+        return render_template("FI_res.html", results = c,name = name, jobnames = jobnames, names = names, pk = pk, total = total, form = form, message = message)
 
     data = {'date': [],'passed':[], 'skipped':[], 'failed':[]}      # data for line-chart                                   
     if 'parameters' in c['job'].keys():
@@ -147,7 +172,7 @@ def present(name, jobname, pk):
         config[name][jobname]['color']['top'] = options_form.top.data
         config[name][jobname]['chart_data_count'] = options_form.count.data
         with open('config.yaml', 'w') as f:
-            yaml.dump(config, f, default_flow_style=False)
+            yaml.dump(config, f, default_flow_style=False, sort_keys=False)
         return redirect('')
 
     options_form.bot.data = config[name][jobname]['color']['bot']
@@ -209,7 +234,7 @@ def present(name, jobname, pk):
 def update(name, jobname, pk):
     if not os.path.exists("lock.txt"):
         if upd(conn, name == 'stand')[jobname]:
-            config = yaml.load(open('config.yaml'))
+            config = yaml.full_load(open('config.yaml'))
             return redirect(url_for('present',name = name, jobname = jobname, pk = config[name][jobname]['pk'], mes = 'done'))
         else:
             return redirect(url_for('present',name = name, jobname = jobname, pk = pk, mes = 'already up to date'))
@@ -219,7 +244,7 @@ def update(name, jobname, pk):
 
 @app.route("/<name>/<jobname>")
 def red(name, jobname):
-    config = yaml.load(open("config.yaml"))
+    config = yaml.full_load(open("config.yaml"))
     return redirect(url_for("present", name = name, jobname = jobname, pk = config[name][jobname]['pk']))
 
 
@@ -240,7 +265,7 @@ def comment(name, jobname,pk):
 @app.route("/test")
 def replace():
     k = 0
-    config = yaml.load(open('config.yaml'))
+    config = yaml.full_load(open('config.yaml'))
     for nam in config[name]:
         total = conn.testresults[nam].find().count()
         for i in range(1, total+1):
@@ -276,7 +301,7 @@ def logout():
 @login_required
 def changeConf():
     form = ConfigForm(request.form)
-    config = yaml.load(open('test_config.yaml'))
+    config = yaml.full_load(open('test_config.yaml'))
     if form.validate_on_submit():
         config = form.config.data
         with open('config.yaml', 'w') as f:
@@ -305,6 +330,14 @@ def mysort(mas):
     for item in mas:
         if item[0] not in types:
             yield item
+
+@app.context_processor
+def get_conf():
+    def get_config():
+        conf =  yaml.full_load(open('config.yaml'))
+        return conf
+    return dict(get_config = get_config)
+
 
 if __name__ == '__main__':
     app.run(host = 'web', port = '8080', debug = True, use_reloader = False)

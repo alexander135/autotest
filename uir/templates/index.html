@@ -3,22 +3,16 @@
         <h1 class = "navbar-brand mx-auto"> Home</h1>
 {% endblock %}
 {% block content %}
-    <div class = index>
-    <div>
-        <h3> Jenkins: </h3>
-    </div>
-    <div>
-        {% for jobname in jobnames.keys() %}
-        <form action= "/jobs/{{jobname}}/{{jobnames[jobname]['pk']}}/update" id = "active-form"><button id = "active-button">{{jobname}}</button></form>
-        {% endfor %}
-    </div>
-    <div>
-        <h3> No Jenkins:</h3>
-    </div>
-    {% for jobname in names.keys() %}
-    <form action = "/stand/{{ jobname }}/{{ names[jobname]['pk'] }}" id = "active-form"><button id = "active-button">{{jobname}}</button></form>
+
+    {% for type in get_config() if type != "PATH" and type != "last_update" and type != "db"%}
+    <div class = "index">
+    <h3> {{type}}:</h3>
+        <div> 
+            {% for name in get_config()[type]%}
+            <form action = "/{{type}}/{{name}}/{{get_config()[type][name]['pk']}}/update" id = "active-form"><button id = "active-button">{{name}}</button></form>
+            {% endfor %}
+            </div>
     {% endfor %}
-    <span> {{current_user.name}} <span>
     </div>
 {% endblock %}
 {% block script %}

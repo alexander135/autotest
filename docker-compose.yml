@@ -13,6 +13,8 @@ services:
       - restore_db
     env_file:
       - .env
+    depends_on:
+      - restore_db
   db: 
     image: mongo:4.1
     networks:
