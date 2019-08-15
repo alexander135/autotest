@@ -39,16 +39,22 @@
                 <caption>
                     Problems
                 </caption>
-                <tr>
+                <tr class = "align-center height-2">
                     <td>Test</td>
                     <td>Result</td>
                     <td>Reason</td>
                     </tr>
-                {% for i in results['problems']|batch(3) %}
-                    <tr>
-                        {% for item in i%}
+                {% for row in results['problems']|batch(3) %}
+                    <tr class = height-2>
+                        {% for item in row %}
                             <td>
-                                {{item}}
+                                {% if item[1] != ""%}
+                                <a href = {{item[1]}}>
+                                {{ item[0] }}
+                                </a>
+                                {% else %}
+                                {{item[0]}}
+                                {% endif %}
                             </td>
                         {% endfor %}
                     </tr>

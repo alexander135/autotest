@@ -6,3 +6,4 @@ dump/
 __pycache__/
 *.swo
 .env
+test.py

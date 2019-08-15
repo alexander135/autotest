@@ -119,7 +119,7 @@ def update(conn, flag = False):
                         logger.info(curname + ' already up to date')
                         result[curname] = 0
     for lcov in config['LCOV'].keys():
-        res = update_LCOV(str(config['LCOV'][lcov]['id']))
+        res = update_LCOV(config["LCOV"][lcov]['path'], str(config['LCOV'][lcov]['id']))
         if res:
             logger.info(lcov + "new results were found")
             result[lcov] = "Done"
@@ -145,6 +145,7 @@ def update(conn, flag = False):
         logger.info(method)
         if res:
             if method == 'update':
+                logger.info(res)
                 mongoUpdate(res, name, conn)
                 result[fi] = 'Updated problem'
             else:
@@ -164,7 +165,7 @@ def update(conn, flag = False):
     
     if flag:
         for name in config['stand'].keys():
-            res = update_stand(config['stand'][name]['id'])
+            res = update_stand(name, config['stand'][name]['id'])
             if res:
                 pk = mongoSave(res, name, conn)
                 result[name] = 'Done'
@@ -194,9 +195,15 @@ def mongoSave(result, jobname, conn):
 def mongoUpdate(result, name, conn):
     db_logger.info('saving to db')
     db = conn.testresults
-    db_logger.info('established connection to db')
-    coll = db[name]
-    coll.update_one({'job.pk' : result['job']['pk']}, {'problems' : result['problems']})
+    db_logger.info('established connection to db' + str(name))
+    try:
+        db_logger.info(name)
+        coll = db[name]
+        pk = coll.find().count()
+        result['job']['pk'] = pk
+        coll.replace_one({'job.pk' : pk}, result)
+    except Exception as e:
+        db_logger.info(e)
     db_logger.info('updated problems')
     return None
 
@@ -246,7 +253,7 @@ def count_res(obj, res):
 
 
 
-def update_stand(cur_id):
+def update_stand(name, cur_id):
     config = yaml.full_load(open('config.yaml'))
     a = urllib.request.urlopen('/'.join([config["stand_PATH"], "generic/stand?testuser=astsplus@fitfond@spt5&mode=list "]))
     soup = BeautifulSoup(a, "html.parser" )
@@ -294,9 +301,9 @@ def update_stand(cur_id):
     return(data)
 
 
-def update_LCOV(cur_id):
+def update_LCOV(path, cur_id):
     logger.info('updating LCOV')
-    page = urllib.request.urlopen("http://asts-jenkins.moex.com/view/Coverage/job/lcov.rebus-curr.build/ws/coverage.report/index.html")
+    page = urllib.request.urlopen(path)
     
     logger.info("connected")
     soup = BeautifulSoup(page, "html.parser")
@@ -343,9 +350,13 @@ def update_FI(cur_id, cur_problems):
     if data['res']['Total'] != data['res']['Pass']:
         table = soup.find("table").find_all("tr")
         for row in table:
-            for i in row.stripped_strings:
-                data['problems'].append(i)
-    logger.info(data)
+            for td in row.find_all("td"):
+                if td.a:
+                    data['problems'].append((list(td.stripped_strings)[0], td.a['href']))
+                else:
+                    data['problems'].append((str(td.string).strip(), ""))
+
+
 
     if data['job']['Дата запуска'] == cur_id and cur_problems != None:
         if data['problems'] == cur_problems:

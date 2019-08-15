@@ -21,9 +21,14 @@ table{
     font-size: 1vw;
     font-weight: 499;
 }
-
+.height-2{
+    height: 2vw;
+}
 tr,td{
     border:1px solid black
+}
+.align-center{
+    text-align: center;
 }
 
 ul{

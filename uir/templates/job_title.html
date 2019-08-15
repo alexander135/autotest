@@ -12,7 +12,7 @@
 
 
                 {% for type in get_config() %}
-                {% if type != "PATH" and type != "db" and type != "last_update"%}
+                {% if type != "PATH" and type != "db" and type != "last_update" and type != "stand_PATH"%}
                 <h6 class = "dropdown-header"> {{ type }}</h6>
                     {% for name in get_config()[type] %}
                     {% if name == results['job']['name'] %}

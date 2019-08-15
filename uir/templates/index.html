@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 
-    {% for type in get_config() if type != "PATH" and type != "last_update" and type != "db"%}
+    {% for type in get_config() if type != "PATH" and type != "last_update" and type != "db" and type != "stand_PATH"%}
     <div class = "index">
     <h3> {{type}}:</h3>
         <div> 
