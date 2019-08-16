@@ -167,6 +167,7 @@ input{
     grid-template-rows: min-content min-content;
 }
 .fi-table{
+    grid-column: 1/3;
     display: grid;
     margin: 1vw;
 

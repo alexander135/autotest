@@ -147,7 +147,7 @@ def update(conn, flag = False):
             if method == 'update':
                 logger.info(res)
                 mongoUpdate(res, name, conn)
-                result[fi] = 'Updated problem'
+                result[name] = 'Updated problem'
             else:
                 res['job']['name'] = name
                 pk = mongoSave(res, name, conn)

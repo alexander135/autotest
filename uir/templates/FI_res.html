@@ -34,6 +34,9 @@
                 {% endif %}
             {% endfor %}
             </ul>
+            </div>
+</div>
+
         <div class = "fi-table">
             <table>
                 <caption>
@@ -49,11 +52,11 @@
                         {% for item in row %}
                             <td>
                                 {% if item[1] != ""%}
-                                <a href = {{item[1]}}>
+                                <a href = "http://10.50.170.25{{item[1]}}">
                                 {{ item[0] }}
                                 </a>
                                 {% else %}
-                                {{item[0]}}
+                                {{ item[0] }}
                                 {% endif %}
                             </td>
                         {% endfor %}
@@ -61,8 +64,6 @@
                 {% endfor %}
             </table>
         </div>
-            </div>
-</div>
 <div class ="but stand-but">
         {% if pk > 1 %}
             <a href = "./{{pk-1}}"><button><i class ="fas fa-long-arrow-alt-left"></i></button></a>
