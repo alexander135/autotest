@@ -70,7 +70,7 @@ db:
   db_name: testresults
   host: db
   port: 27017
-last_update: '2019-08-16 11:47:34'
+last_update: '2019-08-16 12:45:02'
 stand:
   astsplus@fitfond@spt5:
     id: '16.08.2019 07:21:53 / FailedSyncBackupTest / '
